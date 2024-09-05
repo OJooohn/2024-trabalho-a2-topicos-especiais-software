@@ -14,6 +14,8 @@
     --logout-color: #dd2222;
     --logout-color-hover: #aa0e0e;
     --edit-button-color: #45d328;
+    --criar-evento-button: #009628;
+    --criar-evento-button-hover: #006b1d;
 }
 
 .darkmode {
@@ -29,6 +31,8 @@
     --logout-color: #fc6464;
     --logout-color-hover: #ff4a4a;
     --edit-button-color: #278a13;
+    --criar-evento-button: #00e63e;
+    --criar-evento-button-hover: #3df26e;
 }
 
 *,
@@ -156,32 +160,75 @@ article .content > *:last-child {
     margin-bottom: 0; /* Remove margin from last child */
 }
 
-.dashboard-title {
+.create-event-title h2 {
     font-family: Rubik, sans-serif;
 }
 
-.dashboard-nav {
+.content form {
+    width: 80%;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+}
+
+form {
     width: 100%;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center align items */
+    justify-content: center; /* Center justify items */
 }
 
-.dashboard-nav button{
-    background-color: var(--logout-color);
-    color: var(--base-color);
-    font-family: Poppins, sans-serif;
-    border: none;
-    border-radius: 10px;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    width: 100px;
-    height: 40px;
+.form-group {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px; /* Space between form groups */
+}
+
+label {
+    font-size: 1rem;
+    margin-bottom: 5px; /* Space between label and input */
+    font-family: Poppins;
+    font-weight: lighter;
+}
+
+input {
+    width: 95%;
+    padding: 10px;
+    margin: auto;
+    border: 1px solid #ccc;
+    border-radius: 13px;
+    font-family: Poppins;
+}
+
+.descricao-input {
+    height: 100px;
+    width: 95%;
+    padding: 10px;
+    margin: auto;
+    border: 1px solid #ccc;
+    border-radius: 13px;
+    font-family: Poppins;
+}
+
+.criar-button {
     cursor: pointer;
-    transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+    background-color: var(--criar-evento-button);
+    color: var(--base-color);
+    width: 30%;
+    padding: 10px;
+    margin: auto;
+    border: 1px solid #ccc;
+    border-radius: 13px;
+    font-family: Poppins;
+    border: 0;
+    text-transform: uppercase;
+    transition: ease-in-out 0.2;
 }
 
-.logout-button:hover {
+.criar-button:hover {
     transform: scale(1.033);
-    background-color: var(--logout-color-hover);
-    transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+    background-color: var(--criar-evento-button-hover);
+    transition: ease-in-out 0.2s;
 }

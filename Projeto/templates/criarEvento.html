@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Index Page</title>
-    <link rel="stylesheet" href="{{url_for('static', filename='css/dashboard.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/criarEvento.css')}}">
     <script src="{{ url_for('static', filename='js/script.js') }}" defer></script>
 </head>
 <body>
@@ -21,11 +21,32 @@
     <article>
         <div class="content">
 
-            <div class="dashboard-title">
-                <h2 style="font-size: 2.65rem;">EVENTO</h2>
+            <div class="create-event-title">
+                <h2 style="font-size: 2.65rem;">CRIAR EVENTO</h2>
             </div>
 
-            <p style="font-family: Poppins">Adicionar form para criar evento...</p>
+            <form method="POST" action="{{ url_for('criar_evento') }}">
+
+                {{ form.hidden_tag() }}
+
+                <div class="form-group">
+                    {{ form.nome_evento.label }}
+                    {{ form.nome_evento(placeholder="Digite o nome do evento") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.data_evento.label }}
+                    {{ form.data_evento }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.descricao.label }}
+                    {{ form.descricao(placeholder="Digite a descrição do evento", class="descricao-input") }}
+                </div>
+
+                {{ form.criar(class="criar-button")}}
+
+            </form>
 
         </div>
     </article>

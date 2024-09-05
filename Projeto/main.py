@@ -76,11 +76,39 @@ def logout():
 @login_required
 def dashboard():
     nomeUsuario = current_user.nome
-    return render_template('dashboard.html', usuario=nomeUsuario)
+    eventos = Evento.query.filter_by(id_usuario=current_user.id).all()
+    return render_template('dashboard.html', usuario=nomeUsuario, eventos=eventos)
 
 @app.route('/criar_evento', methods=['GET', 'POST'])
 def criar_evento():
-    return render_template('criarEvento.html')
+    from forms import FormularioEvento
+    print(f'ID: {current_user.id}')
+    formulario = FormularioEvento()
+
+    if formulario.validate_on_submit():
+        nomeEvento = formulario.nome_evento.data
+        dataEvento = formulario.data_evento.data
+        descEvento = formulario.descricao.data
+        status = False
+
+
+        usuBanco = Usuario.query.filter_by(id=current_user.id).first()
+
+        eventoBanco = Evento.query.filter_by(nome_evento=nomeEvento).first()
+
+        print(f'-- {nomeEvento} -- {dataEvento} -- {descEvento}')
+
+        if eventoBanco:
+            print('Evento ja existente')
+        else:
+            novo_evento = Evento(nome_evento=nomeEvento, data_evento=dataEvento, descricao=descEvento, id_usuario=usuBanco.id, status=False)
+            db.session.add(novo_evento)
+            db.session.commit()
+            print('Evento Criado')
+            # redirecionar
+            return redirect(url_for('dashboard'))
+
+    return render_template('criarEvento.html', form=formulario)
 
 @app.route('/editar_evento/<int:evento_id>', methods=['GET', 'POST'])
 def editar_evento():

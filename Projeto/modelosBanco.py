@@ -1,3 +1,4 @@
+from email.policy import default
 from enum import unique
 
 from flask_sqlalchemy import *
@@ -23,4 +24,5 @@ class Evento(db.Model):
     nome_evento = db.Column(db.String, nullable=False)
     data_evento = db.Column(db.Date, nullable=False)
     descricao = db.Column(db.Text, nullable=False)
+    status = db.Column(db.Boolean, default=False)
     id_usuario = db.Column(db.Integer, db.ForeignKey('usuario.id'), nullable=False)
