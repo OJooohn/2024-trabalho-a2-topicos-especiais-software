@@ -36,8 +36,6 @@ def index():
                 login = True
                 return redirect('dashboard')
             else:
-                # pop up no site?
-                login = False
                 print('>> Login ou senha incorretos')
                 flash('Senha incorreta... Digite novamente')
                 return redirect(url_for('index'))
