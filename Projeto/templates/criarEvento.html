@@ -27,20 +27,282 @@ Novo Evento
             {{ form.descricao(class="form-control", placeholder="Descreva o evento...") }}
 
             <br>
-            {% for usuario in usuarios %}
-            <input type="checkbox" name="usuarios" value="{{ usuario.id }}"> {{ usuario.nome }}<br>
-            {% endfor %}
+            {{ form.usuarios.label(class="form-label") }}
+            <div style="width: 100%;">
+                <select name="usuarios" id="users" multiple multiselect-search="true" multiselect-select-all="true"
+                    multiselect-max-items="3" onchange="console.log(this.selectedOptions)">
+                    {% for usuario in usuarios %}
+                    <option value="{{ usuario.id }}"> {{ usuario.nome }}</option>
+                    {% endfor %}
+                </select>
+            </div>
 
             <br>
             {{ form.criar(class="btn btn-primary nm-button") }}
-            
+
         </form>
 
         <br>
-        <a href="{{ url_for('dashboard') }}"><button type="button" class="nm-button" style="background-color: gray;">Voltar para o
+        <a href="{{ url_for('dashboard') }}"><button type="button" class="nm-button"
+                style="background-color: gray;">Voltar para o
                 Dashboard</button></a>
 
     </div>
+
+    <script>
+        var style = document.createElement('style');
+        style.setAttribute("id", "multiselect_dropdown_styles");
+        style.innerHTML = `
+.multiselect-dropdown{
+ border-radius: 20px !important;
+  width: 100% !important;
+  display: inline-block;
+  padding: 2px 5px 0px 5px;
+  border-radius: 4px;
+  border: solid 1px #ced4da;
+  background-color: var(--multiselector-bg-color);
+  position: relative;
+  background-position: right .75rem center;
+}
+.multiselect-dropdown span.optext, .multiselect-dropdown span.placeholder{
+  margin-right:0.5em; 
+  margin-bottom:2px;
+  padding:5px 10px; 
+  border-radius: 4px; 
+  display:inline-block;
+}
+.multiselect-dropdown span.optext{
+  background-color: var(--primary-color);
+  padding:5px 0.75em; 
+  border-radius: 20px;
+}
+.multiselect-dropdown span.optext .optdel {
+  float: right;
+  margin: 0 -6px 1px 5px;
+  font-size: 0.7em;
+  margin-top: 3px;
+  cursor: pointer;
+  color: var(--text-color);
+  margin-bottom: -5px;
+}
+.multiselect-dropdown span.optext .optdel:hover { color: red;}
+.multiselect-dropdown span.placeholder{
+  background-color: var(--multi-bg-color);
+  color: var(--multiselector-text-color);
+  opacity: 1 !important;
+  color: black;
+}
+.multiselect-dropdown-list-wrapper{
+  border-radius: 20px !important;
+  box-shadow: gray 0 3px 8px;
+  z-index: 100;
+  padding:2px;
+  border-radius: 4px;
+  border: solid 1px #ced4da;
+  display: none;
+  margin: -1px;
+  position: absolute;
+  top:0;
+  left: 0;
+  right: 0;
+  background: var(--multiselector-bg-color);
+  color: var(--multiselector-text-color);
+}
+.multiselect-dropdown-list-wrapper .multiselect-dropdown-search{
+  margin-bottom:5px;
+}
+.multiselect-dropdown-list{
+  padding:2px;
+  height: 15rem;
+  overflow-y:auto;
+  overflow-x: hidden;
+}
+.multiselect-dropdown-list::-webkit-scrollbar {
+  width: 6px;
+}
+.multiselect-dropdown-list::-webkit-scrollbar-thumb {
+  background-color: var(--primary-color);
+  border-radius:3px;
+}
+
+.multiselect-dropdown-list div{
+  border-radius: 4px;
+  padding: 5px;
+}
+.multiselect-dropdown-list input{
+  height: 1.15em;
+  margin-right: 0.35em;  
+}
+.multiselect-dropdown-list div.checked{
+}
+.multiselect-dropdown-list div:hover{
+  background-color: var(--secondary-color);
+  transition: background-color 0.3s;
+}
+.multiselect-dropdown-list-wrapper div:not(:last-child) {
+  border-bottom: 1px solid var(--multiselector-text-color); /* Adiciona uma borda inferior */
+  padding: 5px;
+}
+.multiselect-dropdown-list-wrapper div label::first-letter {
+  text-transform: uppercase;
+}
+.multiselect-dropdown-list-wrapper input:focus {
+  outline: none; 
+  box-shadow: none; 
+}
+.multiselect-dropdown span.maxselected {width:100%;}
+.multiselect-dropdown-all-selector {border-bottom:solid 1px var(--multiselector-text-color);}
+.multiselect-dropdown{
+  width: 100%;
+}
+.multiselect-dropdown-all-selector input[type="checkbox"]{
+  width: 1.5em;
+}
+.multiselect-dropdown-list input[type="checkbox"]{
+  width: 1.5em;
+}
+`;
+        document.head.appendChild(style);
+
+        function MultiselectDropdown(options) {
+            var config = {
+                search: true,
+                height: '15rem',
+                placeholder: 'Selecione',
+                txtSelected: 'selected',
+                txtAll: 'Todos',
+                txtRemove: 'Remove',
+                txtSearch: 'Pesquisar',
+                ...options
+            };
+            function newEl(tag, attrs) {
+                var e = document.createElement(tag);
+                if (attrs !== undefined) Object.keys(attrs).forEach(k => {
+                    if (k === 'class') { Array.isArray(attrs[k]) ? attrs[k].forEach(o => o !== '' ? e.classList.add(o) : 0) : (attrs[k] !== '' ? e.classList.add(attrs[k]) : 0) }
+                    else if (k === 'style') {
+                        Object.keys(attrs[k]).forEach(ks => {
+                            e.style[ks] = attrs[k][ks];
+                        });
+                    }
+                    else if (k === 'text') { attrs[k] === '' ? e.innerHTML = '&nbsp;' : e.innerText = attrs[k] }
+                    else e[k] = attrs[k];
+                });
+                return e;
+            }
+
+
+            document.querySelectorAll("select[multiple]").forEach((el, k) => {
+
+                var div = newEl('div', { class: 'multiselect-dropdown', style: { width: config.style?.width ?? el.clientWidth + 'px', padding: config.style?.padding ?? '' } });
+                el.style.display = 'none';
+                el.parentNode.insertBefore(div, el.nextSibling);
+                var listWrap = newEl('div', { class: 'multiselect-dropdown-list-wrapper' });
+                var list = newEl('div', { class: 'multiselect-dropdown-list', style: { height: config.height } });
+                var search = newEl('input', { class: ['multiselect-dropdown-search'].concat([config.searchInput?.class ?? 'form-control']), style: { width: '100%', display: el.attributes['multiselect-search']?.value === 'true' ? 'block' : 'none' }, placeholder: config.txtSearch });
+                listWrap.appendChild(search);
+                div.appendChild(listWrap);
+                listWrap.appendChild(list);
+
+                el.loadOptions = () => {
+                    list.innerHTML = '';
+
+                    if (el.attributes['multiselect-select-all']?.value == 'true') {
+                        var op = newEl('div', { class: 'multiselect-dropdown-all-selector' })
+                        var ic = newEl('input', { type: 'checkbox' });
+                        op.appendChild(ic);
+                        op.appendChild(newEl('label', { text: config.txtAll }));
+
+                        op.addEventListener('click', () => {
+                            op.classList.toggle('checked');
+                            op.querySelector("input").checked = !op.querySelector("input").checked;
+
+                            var ch = op.querySelector("input").checked;
+                            list.querySelectorAll(":scope > div:not(.multiselect-dropdown-all-selector)")
+                                .forEach(i => { if (i.style.display !== 'none') { i.querySelector("input").checked = ch; i.optEl.selected = ch } });
+
+                            el.dispatchEvent(new Event('change'));
+                        });
+                        ic.addEventListener('click', (ev) => {
+                            ic.checked = !ic.checked;
+                        });
+                        el.addEventListener('change', (ev) => {
+                            let itms = Array.from(list.querySelectorAll(":scope > div:not(.multiselect-dropdown-all-selector)")).filter(e => e.style.display !== 'none')
+                            let existsNotSelected = itms.find(i => !i.querySelector("input").checked);
+                            if (ic.checked && existsNotSelected) ic.checked = false;
+                            else if (ic.checked == false && existsNotSelected === undefined) ic.checked = true;
+                        });
+
+                        list.appendChild(op);
+                    }
+
+                    Array.from(el.options).map(o => {
+                        var op = newEl('div', { class: o.selected ? 'checked' : '', optEl: o })
+                        var ic = newEl('input', { type: 'checkbox', checked: o.selected });
+                        op.appendChild(ic);
+                        op.appendChild(newEl('label', { text: o.text }));
+
+                        op.addEventListener('click', () => {
+                            op.classList.toggle('checked');
+                            op.querySelector("input").checked = !op.querySelector("input").checked;
+                            op.optEl.selected = !!!op.optEl.selected;
+                            el.dispatchEvent(new Event('change'));
+                        });
+                        ic.addEventListener('click', (ev) => {
+                            ic.checked = !ic.checked;
+                        });
+                        o.listitemEl = op;
+                        list.appendChild(op);
+                    });
+                    div.listEl = listWrap;
+
+                    div.refresh = () => {
+                        div.querySelectorAll('span.optext, span.placeholder').forEach(t => div.removeChild(t));
+                        var sels = Array.from(el.selectedOptions);
+                        if (sels.length > (el.attributes['multiselect-max-items']?.value ?? 5)) {
+                            div.appendChild(newEl('span', { class: ['optext', 'maxselected'], text: sels.length + ' ' + config.txtSelected }));
+                        }
+                        else {
+                            sels.map(x => {
+                                var c = newEl('span', { class: 'optext', text: x.text, srcOption: x });
+                                if ((el.attributes['multiselect-hide-x']?.value !== 'true'))
+                                    c.appendChild(newEl('span', { class: 'optdel', text: '🗙', title: config.txtRemove, onclick: (ev) => { c.srcOption.listitemEl.dispatchEvent(new Event('click')); div.refresh(); ev.stopPropagation(); } }));
+
+                                div.appendChild(c);
+                            });
+                        }
+                        if (0 == el.selectedOptions.length) div.appendChild(newEl('span', { class: 'placeholder', text: el.attributes['placeholder']?.value ?? config.placeholder }));
+                    };
+                    div.refresh();
+                }
+                el.loadOptions();
+
+                search.addEventListener('input', () => {
+                    list.querySelectorAll(":scope div:not(.multiselect-dropdown-all-selector)").forEach(d => {
+                        var txt = d.querySelector("label").innerText.toUpperCase();
+                        d.style.display = txt.includes(search.value.toUpperCase()) ? 'block' : 'none';
+                    });
+                });
+
+                div.addEventListener('click', () => {
+                    div.listEl.style.display = 'block';
+                    search.focus();
+                    search.select();
+                });
+
+                document.addEventListener('click', function (event) {
+                    if (!div.contains(event.target)) {
+                        listWrap.style.display = 'none';
+                        div.refresh();
+                    }
+                });
+            });
+        }
+
+        window.addEventListener('load', () => {
+            MultiselectDropdown(window.MultiselectDropdownOptions);
+        });
+
+    </script>
 </div>
 
 {% endblock %}

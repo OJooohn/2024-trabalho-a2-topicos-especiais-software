@@ -24,6 +24,9 @@
             --accent-color: #0071ff;
             --accent-hover-color: #005bb5;
             --secondary-hover-color: #3a435d;
+
+            --multiselector-bg-color: white;
+            --multiselector-text-color: black;
         }
 
         .darkmode {
@@ -36,6 +39,9 @@
             --accent-color: #0071ff;
             --accent-hover-color: #005bb5;
             --secondary-hover-color: #3a435d;
+
+            --multiselector-bg-color: white;
+            --multiselector-text-color: black;
         }
 
         *,
@@ -162,6 +168,19 @@
             transform: scale(1.033);
             color: var(--base-color);
             transition: transform ease-in-out 0.3s;
+        }
+
+        .form-control::placeholder {
+            color: black !important;
+            /* Cor sólida para o placeholder */
+            opacity: 1 !important;
+            /* Garantir que a opacidade seja 1 */
+        }
+
+        .form-control {
+            border-radius: 20px !important;
+            outline: none !important;
+            box-shadow: none !important;
         }
     </style>
 </head>
