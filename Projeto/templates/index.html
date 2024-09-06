@@ -159,6 +159,25 @@
             align-items: center;
             padding: 20px 0;
         }
+
+        .alert {
+            padding: 10px;
+            border-radius: 15px;
+            margin-bottom: 10px;
+        }
+
+        .alert input {
+            border: none;
+            background-color: transparent;
+            cursor: pointer;
+            color: var(--text-color);
+            transition: transform ease-in-out 0.3s;
+        }
+
+        .alert input:hover {
+            transform: scale(1.1);
+            transition: transform ease-in-out 0.3s;
+        }
     </style>
 </head>
 
@@ -189,6 +208,17 @@
                 </div>
             </div>
 
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }} bg-danger" id="div_flash">
+                {{ message }}
+                <input type="button" value=&#10006 onclick="removeFlash()" style="float: right">
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
             <div class="login-container">
                 <p class="login-text">Faça o login:</p>
             </div>
@@ -207,10 +237,12 @@
                     {{ form.senha(class="form-control", placeholder="Digite sua senha", style="border-radius: 15px;") }}
                 </div>
                 <div class="d-grid">
-                    {{ form.login(class="btn btn-primary", style="text-transform: uppercase; letter-spacing: 3px;", style="border-radius: 15px;") }}
+                    {{ form.login(class="btn btn-primary", style="text-transform: uppercase; letter-spacing: 3px;",
+                    style="border-radius: 15px;") }}
                 </div>
             </form>
-            <p class="register-text" style="margin-top: 15px;">Não tem cadastro? <a href="{{ url_for('register')}}">Faça o cadastro</a></p>
+            <p class="register-text" style="margin-top: 15px;">Não tem cadastro? <a href="{{ url_for('register')}}">Faça
+                    o cadastro</a></p>
         </div>
     </div>
 
@@ -242,6 +274,11 @@
         darkmode = localStorage.getItem('darkmode'); // Update the value of darkmode
         darkmode !== "active" ? enableDarkMode() : disableDarkMode();
     });
+
+    function removeFlash() {
+        const element = document.getElementById("div_flash");
+        element.remove();
+    }
 </script>
 
 </html>
