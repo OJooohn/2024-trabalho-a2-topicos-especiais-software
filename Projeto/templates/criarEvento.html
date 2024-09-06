@@ -43,8 +43,7 @@ Novo Evento
         </form>
 
         <br>
-        <a href="{{ url_for('dashboard') }}"><button type="button" class="nm-button"
-                style="background-color: gray;">Voltar para o
+        <a href="{{ url_for('dashboard') }}"><button type="button" class="nm-button bg-success">Voltar para o
                 Dashboard</button></a>
 
     </div>
@@ -54,10 +53,10 @@ Novo Evento
         style.setAttribute("id", "multiselect_dropdown_styles");
         style.innerHTML = `
 .multiselect-dropdown{
- border-radius: 20px !important;
+  border-radius: 20px !important;
   width: 100% !important;
   display: inline-block;
-  padding: 2px 5px 0px 5px;
+  padding: 3px 0px 1px 5px;
   border-radius: 4px;
   border: solid 1px #ced4da;
   background-color: var(--multiselector-bg-color);
@@ -72,7 +71,10 @@ Novo Evento
   display:inline-block;
 }
 .multiselect-dropdown span.optext{
-  background-color: var(--primary-color);
+  color: white !important;
+}
+.multiselect-dropdown span.optext{
+  background-color: var(--accent-color);
   padding:5px 0.75em; 
   border-radius: 20px;
 }
@@ -82,7 +84,7 @@ Novo Evento
   font-size: 0.7em;
   margin-top: 3px;
   cursor: pointer;
-  color: var(--text-color);
+  color: white;
   margin-bottom: -5px;
 }
 .multiselect-dropdown span.optext .optdel:hover { color: red;}
@@ -136,7 +138,7 @@ Novo Evento
 .multiselect-dropdown-list div.checked{
 }
 .multiselect-dropdown-list div:hover{
-  background-color: var(--secondary-color);
+  background-color: var(--accent-color);
   transition: background-color 0.3s;
 }
 .multiselect-dropdown-list-wrapper div:not(:last-child) {
@@ -149,6 +151,9 @@ Novo Evento
 .multiselect-dropdown-list-wrapper input:focus {
   outline: none; 
   box-shadow: none; 
+}
+.multiselect-dropdown .optext::first-letter {
+  text-transform: uppercase !important;
 }
 .multiselect-dropdown span.maxselected {width:100%;}
 .multiselect-dropdown-all-selector {border-bottom:solid 1px var(--multiselector-text-color);}
