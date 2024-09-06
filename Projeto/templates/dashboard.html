@@ -62,6 +62,14 @@ Dashboard
         border-bottom-right-radius: 20px;
     }
 
+    table td.descricao  {
+        max-width: 200px; /* Adjust as needed */
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        word-wrap: break-word;
+    }
+
     .dashboard-nav {
         display: flex;
         justify-content: space-between;
@@ -84,6 +92,12 @@ Dashboard
     .nome-usuario button {
         background-color: transparent;
         border: 0;
+    }
+
+    .action-btns {
+        display: flex;
+        justify-content: space-between;
+        align-itens: center;
     }
 </style>
 <div class="container d-flex justify-content-center align-items-center">
@@ -120,22 +134,25 @@ Dashboard
             <tr>
                 <td>{{ event.nome_evento }}</td>
                 <td>{{ event.data_evento }}</td>
-                <td>{{ event.descricao }}</td>
+                <td style="max-width: 200px">{{ event.descricao }}</td>
                 <td>{{ event.status }}</td>
-                <td style="display: flex; justify-content: space-between;">
-                    <a href="{{ url_for('editar_evento', id=event.id) }}"><button type="button"
+                <td style="justify-content: space-between; align-itens: center; height: 100%;">
+                    <div class="action-btns">
+                        <a href="{{ url_for('editar_evento', id=event.id) }}"><button type="button"
                             class="btn bg-warning nm-button"
                             style="text-transform: uppercase; letter-spacing: 3px;">EDITAR</button></a>
 
-                    <a href="{{ url_for('atualizar_evento', id=event.id) }}"><button type="button"
-                            class="btn bg-success nm-button"
-                            style="text-transform: uppercase; letter-spacing: 3px;">ATUALIZAR</button></a>
+                        <a href="{{ url_for('atualizar_evento', id=event.id) }}"><button type="button"
+                                class="btn bg-success nm-button"
+                                style="text-transform: uppercase; letter-spacing: 3px;">ATUALIZAR</button></a>
 
-                    <form action="{{ url_for('deletar_evento', id=event.id) }}" method="POST" style="display:inline;">
-                        <button type="submit" onclick="return confirm('Você tem certeza que deseja excluir?')"
-                            class="btn bg-danger nm-button"
-                            style="text-transform: uppercase; letter-spacing: 3px;">EXCLUIR</button>
-                    </form>
+                        <form action="{{ url_for('deletar_evento', id=event.id) }}" method="POST" style="display:inline;">
+                            <button type="submit" onclick="return confirm('Você tem certeza que deseja excluir?')"
+                                class="btn bg-danger nm-button"
+                                style="text-transform: uppercase; letter-spacing: 3px;">EXCLUIR</button>
+                        </form>
+                    </div>
+
 
                 </td>
             </tr>

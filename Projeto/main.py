@@ -24,7 +24,7 @@ def index():
         if usuarioDB is None:
             print(f'Login: {login}')
             print('>> Login ou senha incorretos')
-            flash('Usuário não encontrado. Tente novamente')
+            flash(f'Usuário "{ usuarioNome }" não encontrado. Tente novamente')
 
         if usuarioDB:
             senhaDigitada = formsLogin.senha.data

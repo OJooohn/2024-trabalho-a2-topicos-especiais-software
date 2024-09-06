@@ -1,5 +1,6 @@
 pip install Flask-SQLAlchemy
 pip install -U Flask-WTF
 pip install email_validator
+pip install Flask-Babel
 
 caso precise
