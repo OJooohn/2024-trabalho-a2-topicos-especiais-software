@@ -76,12 +76,14 @@ Dashboard
         display: flex;
         align-items: center;
         font-family: Poppins, sans-serif;
-        font-size: 0.95rem;
+        font-size: 1rem;
+        font-weight: lighter;
         font-weight: 600;
     }
 
-    .nome-usuario p {
-        margin: 0;
+    .nome-usuario button {
+        background-color: transparent;
+        border: 0;
     }
 </style>
 <div class="container d-flex justify-content-center align-items-center">
@@ -93,7 +95,7 @@ Dashboard
 
             <a href="{{ url_for('logout') }}"><button type="button" class="bg-danger nm-button">Logout</button></a>
             <div class="nome-usuario">
-                <p>USUÁRIO: {{ usuario }}</p>
+                <button>USUÁRIO: {{ usuario }}</button>
             </div>
 
         </div>

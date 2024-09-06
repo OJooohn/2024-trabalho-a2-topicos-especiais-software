@@ -178,6 +178,12 @@
             transform: scale(1.1);
             transition: transform ease-in-out 0.3s;
         }
+
+        .login-button {
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            border-radius: 15px;
+        }
     </style>
 </head>
 
@@ -237,8 +243,7 @@
                     {{ form.senha(class="form-control", placeholder="Digite sua senha", style="border-radius: 15px;") }}
                 </div>
                 <div class="d-grid">
-                    {{ form.login(class="btn btn-primary", style="text-transform: uppercase; letter-spacing: 3px;",
-                    style="border-radius: 15px;") }}
+                    {{ form.login(class="btn btn-primary login-button") }}
                 </div>
             </form>
             <p class="register-text" style="margin-top: 15px;">Não tem cadastro? <a href="{{ url_for('register')}}">Faça

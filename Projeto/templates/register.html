@@ -166,6 +166,12 @@
             transform: scale(1.033);
             transition: ease-in-out 0.3s;
         }
+
+        .register-button {
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            border-radius: 15px;
+        }
     </style>
 </head>
 <body>
@@ -207,7 +213,7 @@
                     {{ form.senha(class="form-control", placeholder="Digite sua senha", style="border-radius: 15px;") }}
                 </div>
                 <div class="d-grid">
-                    {{ form.registrar(class="btn btn-primary", style="text-transform: uppercase; letter-spacing: 3px;", style="border-radius: 15px;") }}
+                    {{ form.registrar(class="btn btn-primary register-button") }}
                 </div>
             </form>
             <p style="margin-top: 10px;">Já tem uma conta? <a href="{{ url_for('index') }}">Faça login</a></p>
