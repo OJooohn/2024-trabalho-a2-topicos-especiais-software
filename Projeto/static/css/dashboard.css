@@ -296,13 +296,12 @@ table tr:nth-child(even) {
     background-color: var(--base-color-table);
 }
 
-table tr:hover {
-    background-color: var(--primary-color);
-    transition: ease-in-out 0.2s;
-}
-
 table tr {
     border-bottom: 1px solid var(--primary-color);
+}
+
+table td:not(:last-child) {
+    border-right: 2px solid var(--base-variant-secondary);
 }
 
 /* Apply border-radius to the first and last rows and cells */

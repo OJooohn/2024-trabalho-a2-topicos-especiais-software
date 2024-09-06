@@ -1,8 +1,9 @@
-from flask import Flask, render_template, url_for, flash
+from flask import Flask, render_template, url_for, flash, request
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.utils import redirect
 
 from config import app, db
+from forms import FormularioEvento, FormularioEditarEvento, FormularioAtualizarEvento
 from modelosBanco import *
 
 @app.route('/', methods=['GET', 'POST'])
@@ -77,7 +78,7 @@ def logout():
 def dashboard():
     nomeUsuario = current_user.nome
     eventos = Evento.query.filter_by(id_usuario=current_user.id).all()
-    return render_template('dashboard.html', usuario=nomeUsuario, eventos=eventos)
+    return render_template('dashboard.html', eventos=eventos, usuario=nomeUsuario)
 
 @app.route('/criar_evento', methods=['GET', 'POST'])
 def criar_evento():
@@ -89,8 +90,6 @@ def criar_evento():
         nomeEvento = formulario.nome_evento.data
         dataEvento = formulario.data_evento.data
         descEvento = formulario.descricao.data
-        status = False
-
 
         usuBanco = Usuario.query.filter_by(id=current_user.id).first()
 
@@ -101,7 +100,7 @@ def criar_evento():
         if eventoBanco:
             print('Evento ja existente')
         else:
-            novo_evento = Evento(nome_evento=nomeEvento, data_evento=dataEvento, descricao=descEvento, id_usuario=usuBanco.id, status=False)
+            novo_evento = Evento(nome_evento=nomeEvento, data_evento=dataEvento, descricao=descEvento, id_usuario=usuBanco.id, status='pendente')
             db.session.add(novo_evento)
             db.session.commit()
             print('Evento Criado')
@@ -110,13 +109,50 @@ def criar_evento():
 
     return render_template('criarEvento.html', form=formulario)
 
-@app.route('/editar_evento/<int:evento_id>', methods=['GET', 'POST'])
-def editar_evento():
-    pass
+@app.route('/editar_evento/<int:id>', methods=['GET', 'POST'])
+def editar_evento(id):
+    evento_atual = Evento.query.filter_by(id=id).first()
 
-@app.route('/deletar_evento/<int:evento_id>', methods=['GET', 'POST'])
-def deletar_evento():
-    pass
+    novoFormulario = FormularioEditarEvento()
+    if novoFormulario.validate_on_submit():
+        nomeEvento = novoFormulario.nome_evento.data
+        dataEvento = novoFormulario.data_evento.data
+        descEvento = novoFormulario.descricao.data
+
+        evento_atual.nome_evento = request.form[nomeEvento]
+        evento_atual.data_evento = request.form[dataEvento]
+        evento_atual.descricao = request.form[descEvento]
+        db.session.commit()
+        return redirect(url_for('dashboard'))
+
+    return render_template('editarEvento.html', form=novoFormulario)
+
+@app.route('/deletar_evento/<int:id>', methods=['GET', 'POST'])
+def deletar_evento(id):
+    evento_requerido = Evento.query.filter_by(id=id).first()
+
+    if evento_requerido is None:
+        print('Evento não encontrado')
+        return redirect(url_for('dashboard'))
+    else:
+        db.session.delete(evento_requerido)
+        db.session.commit()
+        print('Evento deletado')
+        return redirect(url_for('dashboard'))
+
+@app.route('/atualizar_evento/<int:id>', methods=['GET', 'POST'])
+def atualizar_evento(id):
+
+    evento_atual = Evento.query.filter_by(id=id).first()
+
+    formulario = FormularioAtualizarEvento()
+
+    if formulario.validate_on_submit():
+        evento_atual.status = request.form['status']
+        db.session.commit()
+        return redirect(url_for('dashboard'))
+
+    return render_template('atualizarEvento.html', form=formulario)
 
 if __name__ == '__main__':
     app.run(debug = True)

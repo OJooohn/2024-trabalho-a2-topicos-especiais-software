@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, DateField, TextAreaField
+from wtforms.fields.choices import SelectField
 from wtforms.fields.simple import EmailField
 from wtforms.validators import DataRequired, Length, Email
 # awo
@@ -17,5 +18,17 @@ class FormularioLogin(FlaskForm):
 class FormularioEvento(FlaskForm):
     nome_evento = StringField('Nome', validators=[DataRequired()])
     data_evento = DateField('Data', format='%Y-%m-%d', validators=[DataRequired()])
-    descricao = TextAreaField('Descrição', validators=[DataRequired()])
+    descricao = TextAreaField('Descrição')
+    status = SelectField('Status', choices=[('pendente'), ('em andamento'), ('concluída')], default='pendente')
     criar = SubmitField('Criar Evento')
+
+class FormularioEditarEvento(FlaskForm):
+    nome_evento = StringField('Nome', validators=[DataRequired()])
+    data_evento = DateField('Data', format='%Y-%m-%d', validators=[DataRequired()])
+    descricao = TextAreaField('Descrição')
+    status = SelectField('Status', choices=[('pendente'), ('em andamento'), ('concluída')], default='pendente')
+    criar = SubmitField('Editar Evento')
+
+class FormularioAtualizarEvento(FlaskForm):
+    status = SelectField('Status', choices=[('pendente'), ('em andamento'), ('concluída')])
+    atualizar = SubmitField('Atualizar')

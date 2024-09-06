@@ -1,77 +1,146 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Index Page</title>
-    <link rel="stylesheet" href="{{url_for('static', filename='css/dashboard.css')}}">
-    <script src="{{ url_for('static', filename='js/script.js') }}" defer></script>
-</head>
-<body>
+{% extends 'base.html' %}
 
-    <header>
-        <h1><a href="{{ url_for('logout')}}">GRUPO BODEGA</a></h1>
-        <button id="theme-switch">
-            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M480-120q-150 0-255-105T120-480q0-150 105-255t255-105q14 0 27.5 1t26.5 3q-41 29-65.5 75.5T444-660q0 90 63 153t153 63q55 0 101-24.5t75-65.5q2 13 3 26.5t1 27.5q0 150-105 255T480-120Z"/></svg>
-            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M480-280q-83 0-141.5-58.5T280-480q0-83 58.5-141.5T480-680q83 0 141.5 58.5T680-480q0 83-58.5 141.5T480-280ZM200-440H40v-80h160v80Zm720 0H760v-80h160v80ZM440-760v-160h80v160h-80Zm0 720v-160h80v160h-80ZM256-650l-101-97 57-59 96 100-52 56Zm492 496-97-101 53-55 101 97-57 59Zm-98-550 97-101 59 57-100 96-56-52ZM154-212l101-97 55 53-97 101-59-57Z"/></svg>
+{% block titulo %}
+Dashboard
+{% endblock %}
 
-        </button>
-    </header>
+{% block body %}
+<style>
+    table {
+        font-family: Poppins, sans-serif;
+        width: 100%;
+        border-radius: 20px;
+        border-bottom: 1px solid var(--base-variant-secondary);
+        border-collapse: separate;
+        border-spacing: 0;
+    }
 
-    <article>
-        <div class="content">
+    /* New styles for table design */
+    table th {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 10px;
+        text-align: left;
+    }
 
-            <div class="dashboard-title">
-                <h2 style="font-size: 2.65rem;">DASHBOARD</h2>
-            </div>
+    table td {
+        padding: 10px;
+        text-align: left;
+        overflow: hidden;
+    }
 
-            <div class="dashboard-container">
+    table th:not(:last-child) {
+        border-right: 2px solid var(--base-variant-secondary);
+    }
 
-                <div class="dashboard-nav">
+    table tr:nth-child(even) {
+        background-color: var(--base-color-table);
+    }
 
-                    <a href="{{ url_for('logout') }}"><button type="button" class="logout-button">Logout</button></a>
-                    <div class="nome-usuario">
-                        <p>Usuário: {{ usuario}}</p>
-                    </div>
+    table tr:not(:last-child) td {
+        border-bottom: 1px solid var(--base-variant-secondary);
+    }
 
-                </div>
-                
-                <div class="custom-separator"></div>
+    table td:not(:last-child) {
+        border-right: 2px solid var(--base-variant-secondary);
+    }
 
-                <h2>Eventos</h2>
+    /* Apply border-radius to the first and last rows and cells */
+    table tr:first-child th:first-child {
+        border-top-left-radius: 20px;
+    }
 
-                <div class="dashboard-tools">
-                    <a href="{{ url_for('criar_evento') }}"><button type="button" class="tool-button">CRIAR</button></a>
-                </div>
+    table tr:first-child th:last-child {
+        border-top-right-radius: 20px;
+    }
 
-                <div class="custom-separator"></div>
-                
-                <div class="table-container">
+    table tr:last-child td:first-child {
+        border-bottom-left-radius: 20px;
+    }
 
-                    <table>
-                        <tr>
-                            <th>Nome</th>
-                            <th>Data</th>
-                            <th>Descrição</th>
-                            <th>Status</th>
-                        </tr>
-                        {% for evento in eventos %}
-                            <tr>
-                                <td>{{ evento.nome_evento }}</td>
-                                <td>{{ evento.data_evento }}</td>
-                                <td>{{ evento.descricao }}</td>
-                                <td>{{ evento.status }}</td>
-                            </tr>
-                        {% endfor %}
-    
-                    </table>
+    table tr:last-child td:last-child {
+        border-bottom-right-radius: 20px;
+    }
 
-                </div>
+    .dashboard-nav {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+    }
 
+    .nome-usuario {
+        background-color: var(--accent-color);
+        color: var(--base-color);
+        padding: 7px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        font-family: Poppins, sans-serif;
+        font-size: 0.95rem;
+        font-weight: 600;
+    }
+
+    .nome-usuario p {
+        margin: 0;
+    }
+</style>
+<div class="container d-flex justify-content-center align-items-center">
+    <div class="card p-4" style="width: 100%; max-width: 95%;">
+
+        <h1 style="text-align: center; font-family: Rubik, sans-serif;">DASHBOARD</h1>
+
+        <div class="dashboard-nav">
+
+            <a href="{{ url_for('logout') }}"><button type="button" class="bg-danger nm-button">Logout</button></a>
+            <div class="nome-usuario">
+                <p>USUÁRIO: {{ usuario }}</p>
             </div>
 
         </div>
-    </article>
 
-</body>
-</html>
+
+        <hr>
+
+        <h3 style="text-align: center; font-family: Rubik, sans-serif;">EVENTOS</h3>
+        <a href="{{ url_for('criar_evento') }}"> <button type="button" class="btn btn-primary nm-button"
+                style="text-transform: uppercase; letter-spacing: 3px;">Criar Nova
+                Tarefa</button> </a>
+        <br>
+        <table>
+            <tr>
+                <th>Nome</th>
+                <th>Data</th>
+                <th>Descrição</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
+            {% for event in eventos %}
+            <tr>
+                <td>{{ event.nome_evento }}</td>
+                <td>{{ event.data_evento }}</td>
+                <td>{{ event.descricao }}</td>
+                <td>{{ event.status }}</td>
+                <td style="display: flex; justify-content: space-between;">
+                    <a href="{{ url_for('editar_evento', id=event.id) }}"><button type="button"
+                            class="btn bg-warning nm-button"
+                            style="text-transform: uppercase; letter-spacing: 3px;">EDITAR</button></a>
+
+                    <a href="{{ url_for('atualizar_evento', id=event.id) }}"><button type="button"
+                            class="btn bg-success nm-button"
+                            style="text-transform: uppercase; letter-spacing: 3px;">ATUALIZAR</button></a>
+
+                    <form action="{{ url_for('deletar_evento', id=event.id) }}" method="POST" style="display:inline;">
+                        <button type="submit" onclick="return confirm('Você tem certeza que deseja excluir?')"
+                            class="btn bg-danger nm-button"
+                            style="text-transform: uppercase; letter-spacing: 3px;">EXCLUIR</button>
+                    </form>
+
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+    </div>
+</div>
+
+{% endblock %}
