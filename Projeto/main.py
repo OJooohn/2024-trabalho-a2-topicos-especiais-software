@@ -1,5 +1,6 @@
 from flask import Flask, render_template, url_for, flash, request
 from flask_login import login_user, logout_user, current_user, login_required
+from sqlalchemy import update
 from werkzeug.utils import redirect
 
 from config import app, db
@@ -114,14 +115,24 @@ def editar_evento(id):
     evento_atual = Evento.query.filter_by(id=id).first()
 
     novoFormulario = FormularioEditarEvento()
-    if novoFormulario.validate_on_submit():
-        nomeEvento = novoFormulario.nome_evento.data
-        dataEvento = novoFormulario.data_evento.data
-        descEvento = novoFormulario.descricao.data
 
-        evento_atual.nome_evento = request.form[nomeEvento]
-        evento_atual.data_evento = request.form[dataEvento]
-        evento_atual.descricao = request.form[descEvento]
+    if novoFormulario.validate_on_submit():
+        parameters = {
+            'data_evento':  novoFormulario.data_evento.data,
+            'nome_evento':  novoFormulario.nome_evento.data,
+            'descricao':  novoFormulario.descricao.data,
+            'status':  novoFormulario.status.data,
+            'evento_id': evento_atual.id
+        }
+
+        stmt = update(Evento).values(
+            nome_evento=parameters['nome_evento'],
+            data_evento=parameters['data_evento'],
+            descricao=parameters['descricao'],
+            status=parameters['status']
+        ).where(Evento.id == parameters['evento_id'])
+
+        db.session.execute(stmt)
         db.session.commit()
         return redirect(url_for('dashboard'))
 

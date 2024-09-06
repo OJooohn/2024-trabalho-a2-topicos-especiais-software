@@ -132,19 +132,19 @@ Dashboard
             </tr>
             {% for event in eventos %}
             <tr>
-                <td>{{ event.nome_evento }}</td>
+                <td style="max-width: 150px">{{ event.nome_evento }}</td>
                 <td>{{ event.data_evento }}</td>
                 <td style="max-width: 200px">{{ event.descricao }}</td>
                 <td>{{ event.status }}</td>
-                <td style="justify-content: space-between; align-itens: center; height: 100%;">
+                <td style="justify-content: space-between; align-itens: center; height: 100%; max-width: 200px">
                     <div class="action-btns">
-                        <a href="{{ url_for('editar_evento', id=event.id) }}"><button type="button"
-                            class="btn bg-warning nm-button"
-                            style="text-transform: uppercase; letter-spacing: 3px;">EDITAR</button></a>
-
                         <a href="{{ url_for('atualizar_evento', id=event.id) }}"><button type="button"
                                 class="btn bg-success nm-button"
                                 style="text-transform: uppercase; letter-spacing: 3px;">ATUALIZAR</button></a>
+
+                        <a href="{{ url_for('editar_evento', id=event.id) }}"><button type="button"
+                            class="btn bg-warning nm-button"
+                            style="text-transform: uppercase; letter-spacing: 3px;">EDITAR</button></a>
 
                         <form action="{{ url_for('deletar_evento', id=event.id) }}" method="POST" style="display:inline;">
                             <button type="submit" onclick="return confirm('Você tem certeza que deseja excluir?')"
