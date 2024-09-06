@@ -133,10 +133,10 @@ Dashboard
             {% for event in eventos %}
             <tr>
                 <td style="max-width: 150px">{{ event.nome_evento }}</td>
-                <td>{{ event.data_evento }}</td>
+                <td style="max-width: 70px;">{{ event.data_evento }}</td>
                 <td style="max-width: 200px">{{ event.descricao }}</td>
-                <td>{{ event.status }}</td>
-                <td style="justify-content: space-between; align-itens: center; height: 100%; max-width: 200px">
+                <td style="max-width: 100px;">{{ event.status }}</td>
+                <td style="justify-content: space-between; align-itens: center; height: 100%; max-width: 200px;">
                     <div class="action-btns">
                         <a href="{{ url_for('atualizar_evento', id=event.id) }}"><button type="button"
                                 class="btn bg-success nm-button"
