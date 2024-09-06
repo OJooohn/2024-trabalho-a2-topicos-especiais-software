@@ -83,11 +83,19 @@ def dashboard():
 
 @app.route('/criar_evento', methods=['GET', 'POST'])
 def criar_evento():
-    from forms import FormularioEvento
-    print(f'ID: {current_user.id}')
-    formulario = FormularioEvento()
+    # Usuarios que não são o usuário logado
+    # Aparecem na lista de seleção
+    usuarios = Usuario.query.filter(Usuario.id != current_user.id).all()
+
+    # Criando uma tupla com os usuários para a criação dos eventos
+    usuarios_escolhidos = [(user.id, user.nome) for user in usuarios]
+
+    # Passando a tupla para o formulário
+    formulario = FormularioEvento(user_choices=usuarios_escolhidos)
 
     if formulario.validate_on_submit():
+
+        # Pegar os dados do formulário
         nomeEvento = formulario.nome_evento.data
         dataEvento = formulario.data_evento.data
         descEvento = formulario.descricao.data
@@ -104,11 +112,18 @@ def criar_evento():
             novo_evento = Evento(nome_evento=nomeEvento, data_evento=dataEvento, descricao=descEvento, id_usuario=usuBanco.id, status='pendente')
             db.session.add(novo_evento)
             db.session.commit()
+
+            # Adicionar usuários selecionados ao evento
+            for usuario_selecionado in formulario.usuarios.data:
+                usuario = Usuario.query.get(usuario_selecionado)
+                novo_evento = Evento(nome_evento=nomeEvento, data_evento=dataEvento, descricao=descEvento, id_usuario=usuario.id, status='pendente')
+                db.session.add(novo_evento)
+            db.session.commit()
+
             print('Evento Criado')
-            # redirecionar
             return redirect(url_for('dashboard'))
 
-    return render_template('criarEvento.html', form=formulario)
+    return render_template('criarEvento.html', form=formulario, usuarios=usuarios)
 
 @app.route('/editar_evento/<int:id>', methods=['GET', 'POST'])
 def editar_evento(id):
@@ -148,7 +163,6 @@ def deletar_evento(id):
     else:
         db.session.delete(evento_requerido)
         db.session.commit()
-        print('Evento deletado')
         return redirect(url_for('dashboard'))
 
 @app.route('/atualizar_evento/<int:id>', methods=['GET', 'POST'])

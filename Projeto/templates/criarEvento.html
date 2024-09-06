@@ -27,7 +27,13 @@ Novo Evento
             {{ form.descricao(class="form-control", placeholder="Descreva o evento...") }}
 
             <br>
+            {% for usuario in usuarios %}
+            <input type="checkbox" name="usuarios" value="{{ usuario.id }}"> {{ usuario.nome }}<br>
+            {% endfor %}
+
+            <br>
             {{ form.criar(class="btn btn-primary nm-button") }}
+            
         </form>
 
         <br>

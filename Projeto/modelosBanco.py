@@ -21,8 +21,8 @@ class Usuario(db.Model, UserMixin):
 
 class Evento(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    nome_evento = db.Column(db.String, nullable=False)
+    nome_evento = db.Column(db.String(100), nullable=False)
     data_evento = db.Column(db.Date, nullable=False)
-    descricao = db.Column(db.Text, nullable=False)
-    status = db.Column(db.Enum('pendente', 'em andamento', 'concluída'), default='pendente')
+    descricao = db.Column(db.Text, nullable=True)
     id_usuario = db.Column(db.Integer, db.ForeignKey('usuario.id'), nullable=False)
+    status = db.Column(db.String(50), nullable=False, default='pendente')

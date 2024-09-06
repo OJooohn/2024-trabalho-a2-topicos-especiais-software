@@ -97,7 +97,7 @@ Dashboard
     .action-btns {
         display: flex;
         justify-content: space-between;
-        align-itens: center;
+        align-items: center;
     }
 </style>
 <div class="container d-flex justify-content-center align-items-center">
@@ -113,7 +113,6 @@ Dashboard
             </div>
 
         </div>
-
 
         <hr>
 
@@ -136,7 +135,7 @@ Dashboard
                 <td style="max-width: 70px;">{{ event.data_evento }}</td>
                 <td style="max-width: 200px">{{ event.descricao }}</td>
                 <td style="max-width: 100px;">{{ event.status }}</td>
-                <td style="justify-content: space-between; align-itens: center; height: 100%; max-width: 200px;">
+                <td style="justify-content: space-between; align-items: center; height: 100%; max-width: 200px;">
                     <div class="action-btns">
                         <a href="{{ url_for('atualizar_evento', id=event.id) }}"><button type="button"
                                 class="btn bg-success nm-button"
