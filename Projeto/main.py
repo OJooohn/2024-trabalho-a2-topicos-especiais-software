@@ -24,7 +24,7 @@ def index():
         if usuarioDB is None:
             print(f'Login: {login}')
             print('>> Login ou senha incorretos')
-            flash('Login ou senha incorretos... Tente novamente')
+            flash('Usuário não encontrado. Tente novamente')
 
         if usuarioDB:
             senhaDigitada = formsLogin.senha.data
@@ -38,7 +38,7 @@ def index():
                 # pop up no site?
                 login = False
                 print('>> Login ou senha incorretos')
-                flash('Login ou senha incorretos')
+                flash('Senha incorreta... Digite novamente')
                 return redirect(url_for('index'))
 
     return render_template('index.html', form=formsLogin)

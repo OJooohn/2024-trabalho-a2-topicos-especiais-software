@@ -164,6 +164,7 @@
             padding: 10px;
             border-radius: 15px;
             margin-bottom: 10px;
+            display: flex;
         }
 
         .alert input {
@@ -172,6 +173,7 @@
             cursor: pointer;
             color: var(--text-color);
             transition: transform ease-in-out 0.3s;
+            align-itens: center;
         }
 
         .alert input:hover {
@@ -179,10 +181,20 @@
             transition: transform ease-in-out 0.3s;
         }
 
+        .msg-alert {
+            width: 90%;
+        }
+
         .login-button {
             text-transform: uppercase;
             letter-spacing: 3px;
             border-radius: 15px;
+        }
+
+        .close-btn {
+            position: absolute;
+            right: 13px;
+            top: 7px;
         }
     </style>
 </head>
@@ -218,8 +230,13 @@
             {% if messages %}
             {% for category, message in messages %}
             <div class="alert alert-{{ category }} bg-danger" id="div_flash">
-                {{ message }}
-                <input type="button" value=&#10006 onclick="removeFlash()" style="float: right">
+
+                <div class="msg-alert">
+                   {{ message }}
+                </div>
+                <div class="close-btn">
+                    <input type="button" value=&#10006 onclick="removeFlash()" style="float: right">
+                </div>
             </div>
             {% endfor %}
             {% endif %}
