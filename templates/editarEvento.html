@@ -16,22 +16,22 @@
                 {{ form.hidden_tag() }}
 
                 {{ form.nome_evento.label(class="form-label") }}
-                {{ form.nome_evento(class="form-control", placeholder="Digite o título do evento") }}
+                {{ form.nome_evento(class="form-control", placeholder="Digite o título do evento", value=evento.nome_evento) }}
 
                 <br>
                 {{ form.data_evento.label(class="form-label") }}
-                {{ form.data_evento(class="form-control") }}
+                {{ form.data_evento(class="form-control", value=evento.data_evento) }}
 
                 <br>
                 {{ form.descricao.label(class="form-label") }}
-                {{ form.descricao(class="form-control", placeholder="Digite a descrição do evento") }}
+                <textarea name="descricao" class="form-control" placeholder="Digite a descrição do evento">{{ evento.descricao }}</textarea>
 
                 <br>
                 {{ form.status.label(class="form-label") }}
                 {{ form.status(class="form-control", placeholder="Selecione o status do evento") }}
 
                 <br>
-                {{ form.criar(class="btn btn-primary nm-button", style="text-transform: uppercase; letter-spacing: 3px;") }}
+                {{ form.editar(class="btn btn-primary nm-button", style="text-transform: uppercase; letter-spacing: 3px;") }}
 
             </form>
             <br>

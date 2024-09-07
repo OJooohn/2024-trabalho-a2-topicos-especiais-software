@@ -1,5 +1,8 @@
+from xml.etree.ElementTree import tostring
+
 from flask import Flask, render_template, url_for, flash, request
 from flask_login import login_user, logout_user, current_user, login_required
+from flask_wtf import FlaskForm
 from sqlalchemy import update
 from werkzeug.utils import redirect
 
@@ -136,31 +139,40 @@ def criar_evento():
 @app.route('/editar_evento/<int:id>', methods=['GET', 'POST'])
 def editar_evento(id):
 
-    evento_atual = Evento.query.filter_by(id=id).first()
+    evento_atual = Evento.query.get(id)
+    nome_evento = evento_atual.nome_evento
+    data_evento = evento_atual.data_evento
+    descricao = evento_atual.descricao
+    status = evento_atual.status
 
-    novoFormulario = FormularioEditarEvento()
+    print(f'Desc: {descricao}')
+    print(f'Status: {status}')
+    print(f'Tipo nome: {type(descricao)}')
+    print(f'Tipo status: {type(status)}')
+
+    novoFormulario = FormularioEditarEvento(status=evento_atual.status)
 
     if novoFormulario.validate_on_submit():
-        parameters = {
-            'data_evento':  novoFormulario.data_evento.data,
-            'nome_evento':  novoFormulario.nome_evento.data,
-            'descricao':  novoFormulario.descricao.data,
-            'status':  novoFormulario.status.data,
-            'evento_id': evento_atual.id
-        }
+        novoFormulario.populate_obj(evento_atual)
 
-        stmt = update(Evento).values(
-            nome_evento=parameters['nome_evento'],
-            data_evento=parameters['data_evento'],
-            descricao=parameters['descricao'],
-            status=parameters['status']
-        ).where(Evento.id == parameters['evento_id'])
+        upt = update(Evento).values(
+            nome_evento=novoFormulario.nome_evento.data,
+            data_evento=novoFormulario.data_evento.data,
+            descricao=novoFormulario.descricao.data,
+            status=novoFormulario.status.data,
+            id_usuario=evento_atual.id_usuario,
+        ).where(Evento.id == id)
 
-        db.session.execute(stmt)
+        db.session.execute(upt)
         db.session.commit()
+
+        print(f'Atualizado -- Nome: {novoFormulario.nome_evento.data}')
+        print(f'Atualizado -- Data: {novoFormulario.data_evento.data}')
+        print(f'Atualizado -- Descricao: {novoFormulario.descricao.data}')
+        print(f'Atualizado -- Status: {novoFormulario.status.data}')
         return redirect(url_for('dashboard'))
 
-    return render_template('editarEvento.html', form=novoFormulario)
+    return render_template('editarEvento.html', form=novoFormulario, evento=evento_atual)
 
 @app.route('/deletar_evento/<int:id>', methods=['GET', 'POST'])
 def deletar_evento(id):
@@ -173,20 +185,6 @@ def deletar_evento(id):
         db.session.delete(evento_requerido)
         db.session.commit()
         return redirect(url_for('dashboard'))
-
-@app.route('/atualizar_evento/<int:id>', methods=['GET', 'POST'])
-def atualizar_evento(id):
-
-    evento_atual = Evento.query.filter_by(id=id).first()
-
-    formulario = FormularioAtualizarEvento()
-
-    if formulario.validate_on_submit():
-        evento_atual.status = request.form['status']
-        db.session.commit()
-        return redirect(url_for('dashboard'))
-
-    return render_template('atualizarEvento.html', form=formulario)
 
 if __name__ == '__main__':
     app.run(debug = True)

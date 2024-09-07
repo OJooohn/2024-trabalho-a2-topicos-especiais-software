@@ -109,9 +109,17 @@ Dashboard
     }
 
     .action-btns {
+        width: 60%;
         display: flex;
         justify-content: space-between;
         align-items: center;
+    }
+
+    .center-action-buttons {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
     }
 </style>
 <script type="text/javascript">
@@ -168,20 +176,18 @@ Dashboard
                         <td style="max-width: 200px">{{ event.descricao }}</td>
                         <td style="max-width: 100px;">{{ event.status }}</td>
                         <td style="justify-content: space-between; align-items: center; height: 100%; max-width: 200px;">
-                            <div class="action-btns">
-                                <a href="{{ url_for('atualizar_evento', id=event.id) }}"><button type="button"
-                                        class="btn bg-success nm-button"
-                                        style="text-transform: uppercase; letter-spacing: 3px;">ATUALIZAR</button></a>
-        
-                                <a href="{{ url_for('editar_evento', id=event.id) }}"><button type="button"
-                                    class="btn bg-warning nm-button"
-                                    style="text-transform: uppercase; letter-spacing: 3px;">EDITAR</button></a>
-        
-                                <form action="{{ url_for('deletar_evento', id=event.id) }}" method="POST" style="display:inline;">
-                                    <button type="submit" onclick="return confirm('Você tem certeza que deseja excluir?')"
-                                        class="btn bg-danger nm-button"
-                                        style="text-transform: uppercase; letter-spacing: 3px;">EXCLUIR</button>
-                                </form>
+                            <div class="center-action-buttons">
+                                <div class="action-btns">
+                                    <a href="{{ url_for('editar_evento', id=event.id) }}"><button type="button"
+                                        class="btn bg-warning nm-button"
+                                        style="text-transform: uppercase; letter-spacing: 3px;">EDITAR</button></a>
+            
+                                    <form action="{{ url_for('deletar_evento', id=event.id) }}" method="POST" style="display:inline;">
+                                        <button type="submit" onclick="return confirm('Você tem certeza que deseja excluir?')"
+                                            class="btn bg-danger nm-button"
+                                            style="text-transform: uppercase; letter-spacing: 3px;">EXCLUIR</button>
+                                    </form>
+                                </div>
                             </div>
                         </td>
                     </tr>
