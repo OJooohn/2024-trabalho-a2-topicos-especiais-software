@@ -31,11 +31,13 @@
                 {{ form.status(class="form-control", placeholder="Selecione o status do evento") }}
 
                 <br>
-                {{ form.editar(class="btn btn-primary nm-button", style="text-transform: uppercase; letter-spacing: 3px;") }}
+                <div style="width: 100%; display: flex; justify-content: space-between;">
+                    <a href="{{ url_for('dashboard') }}"><button type="button" class="btn btn-outline-secondary nm-button bg-danger" style="text-transform: uppercase; letter-spacing: 3px; color: var(--base-color);">Cancelar/Voltar</button></a>
+                    {{ form.editar(class="btn btn-primary nm-button bg-success", style="text-transform: uppercase; letter-spacing: 3px;") }}
+                    
+                </div>
 
             </form>
-            <br>
-            <a href="{{ url_for('dashboard') }}"><button type="button" class="btn btn-outline-secondary nm-button" style="text-transform: uppercase; letter-spacing: 3px; background-color: gray; color: var(--base-color);">Cancelar/Voltar</button></a>
 
         </div>
     </div>

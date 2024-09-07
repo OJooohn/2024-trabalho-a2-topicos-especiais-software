@@ -21,13 +21,14 @@ class FormularioLogin(FlaskForm):
 
 class FormularioTarefa(FlaskForm):
     nome_tarefa = StringField('Nome', validators=[DataRequired()])
-    data_tarefa = DateField('Data', format='%Y-%m-%d', validators=[DataRequired()])
+    data_tarefa = DateField('Data', format='%d-%m-%Y', validators=[DataRequired()])
     descricao = TextAreaField('Descrição')
     status = SelectField('Status', choices=[('pendente', 'Pendente'), ('em andamento', 'Em Andamento'),
                                             ('concluída', 'Concluída')], default='pendente')
     usuarios = SelectMultipleField('Usuários', choices=[])  # Este campo será preenchido dinamicamente
-    criar = SubmitField('Criar Evento')
+    criar = SubmitField('Criar Tarefa')
 
+    # Receberá os usuários, exceto o logado, para escolher a quem atribuir a tarefa
     def __init__(self, user_choices, *args, **kwargs):
         super(FormularioTarefa, self).__init__(*args, **kwargs)
         self.usuarios.choices = user_choices
@@ -37,4 +38,4 @@ class FormularioEditarTarefa(FlaskForm):
     data_tarefa = DateField('Data', format='%Y-%m-%d', validators=[DataRequired()])
     descricao = TextAreaField('Descrição')
     status = SelectField('Status', choices=[('pendente', 'Pendente'), ('em andamento', 'Em Andamento'), ('concluída', 'Concluída')])
-    editar = SubmitField('Editar Evento')
+    editar = SubmitField('Editar Tarefa')

@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
+# Necessário para a segurança do login, proteção de dados, autenticação
 app.config['SECRET_KEY'] = 'DJ0519LVKFASHUI'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///event_manager.db'
 

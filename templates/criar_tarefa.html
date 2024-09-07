@@ -55,13 +55,13 @@ Novo Evento
       </div>
 
       <br>
-      {{ form.criar(class="btn btn-primary nm-button") }}
+      <div style="width: 100%; display: flex; justify-content: space-between;">
+        <a href="{{ url_for('dashboard') }}"><button type="button" class="nm-button bg-success" style="border-radius: 20px;">Voltar para o
+          Dashboard</button></a>
+        {{ form.criar(class="btn btn-primary nm-button", style="border-radius: 20px;") }}
+      </div>
 
     </form>
-
-    <br>
-    <a href="{{ url_for('dashboard') }}"><button type="button" class="nm-button bg-success">Voltar para o
-        Dashboard</button></a>
 
   </div>
 

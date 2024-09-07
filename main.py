@@ -1,21 +1,16 @@
-from xml.etree.ElementTree import tostring
-
 from flask import Flask, render_template, url_for, flash, request
 from flask_login import login_user, logout_user, current_user, login_required
 from flask_wtf import FlaskForm
 from sqlalchemy import update
 from werkzeug.utils import redirect
+from werkzeug.security import check_password_hash
 
 from config import app, db
-from forms import FormularioTarefa, FormularioEditarTarefa
+from forms import FormularioLogin, FormularioTarefa, FormularioEditarTarefa
 from modelosBanco import *
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    from forms import FormularioLogin
-    from werkzeug.security import check_password_hash
-
-    login = None
 
     formsLogin = FormularioLogin()
 
@@ -23,11 +18,7 @@ def index():
         usuarioNome = formsLogin.nome.data
         usuarioDB = Usuario.query.filter_by(nome=usuarioNome).first()
 
-        print(f'>> Nome: {usuarioNome} >> UserDB: {usuarioDB}')
-
         if usuarioDB is None:
-            print(f'Login: {login}')
-            print('>> Login ou senha incorretos')
             flash(f'Usuário "{ usuarioNome }" não encontrado. Tente novamente')
 
         if usuarioDB:
@@ -36,10 +27,8 @@ def index():
 
             if check_password_hash(senhaDB, senhaDigitada):
                 login_user(usuarioDB)
-                login = True
                 return redirect('dashboard')
             else:
-                print('>> Login ou senha incorretos')
                 flash('Senha incorreta... Digite novamente')
                 return redirect(url_for('index'))
 
@@ -57,22 +46,17 @@ def register():
         usuarioEmail = formsRegistro.email.data
         usuarioSenha = generate_password_hash(formsRegistro.senha.data)
 
-        print(f'Usuario: {usuarioNome} | Senha codificada: {usuarioSenha}')
-
         if formsRegistro.senha.data == formsRegistro.confirmar_senha.data:
             usuarioExistente = Usuario.query.filter_by(nome=usuarioNome).first()
             emailExistente = Usuario.query.filter_by(email=usuarioEmail).first()
             if usuarioExistente:
-                print('>> Usuario ja cadastrado')
                 flash('Usuario ja cadastrado. Escolha outro nome de usuário!')
             elif emailExistente:
-                print('>> Usuario ja cadastrado')
                 flash('Email ja cadastrado. Digite outro email!')
             else:
                 novo_usuario = Usuario(nome=usuarioNome, email=usuarioEmail, senha=usuarioSenha)
                 db.session.add(novo_usuario)
                 db.session.commit()
-                print('>> Usuario registrado!')
                 return redirect(url_for('index'))
         else:
             flash('Por favor, confirme a senha corretamente')
@@ -89,8 +73,15 @@ def logout():
 @login_required
 def dashboard():
     nomeUsuario = current_user.nome
-    eventos = Tarefa.query.filter_by(id_usuario=current_user.id).all()
-    return render_template('dashboard.html', tarefas=eventos, usuario=nomeUsuario)
+
+    filter_status = request.args.get('filter_status', '')
+
+    if filter_status:
+        tarefas = Tarefa.query.filter_by(id_usuario=current_user.id, status=filter_status).all()
+    else:
+        tarefas = Tarefa.query.filter_by(id_usuario=current_user.id).all()
+
+    return render_template('dashboard.html', usuario=nomeUsuario, tarefas=tarefas)
 
 @app.route('/criar_evento', methods=['GET', 'POST'])
 def criar_evento():
@@ -113,13 +104,9 @@ def criar_evento():
 
         usuBanco = Usuario.query.filter_by(id=current_user.id).first()
 
-        eventoBanco = Tarefa.query.filter_by(nome_tarefa=nomeEvento).first()
+        tarefa_banco = Tarefa.query.filter_by(nome_tarefa=nomeEvento).first()
 
-        print(f'-- {nomeEvento} -- {dataEvento} -- {descEvento}')
-
-        if eventoBanco:
-            print('Tarefa ja existente')
-        else:
+        if not tarefa_banco:
             novo_evento = Tarefa(nome_tarefa=nomeEvento, data_tarefa=dataEvento, descricao=descEvento, id_usuario=usuBanco.id, status='pendente')
             db.session.add(novo_evento)
             db.session.commit()
@@ -131,10 +118,9 @@ def criar_evento():
                 db.session.add(novo_evento)
             db.session.commit()
 
-            print('Tarefa Criado')
             return redirect(url_for('dashboard'))
 
-    return render_template('criarEvento.html', form=formulario, usuarios=usuarios)
+    return render_template('criar_tarefa.html', form=formulario, usuarios=usuarios)
 
 @app.route('/editar_evento/<int:id>', methods=['GET', 'POST'])
 def editar_evento(id):
@@ -161,7 +147,7 @@ def editar_evento(id):
 
         return redirect(url_for('dashboard'))
 
-    return render_template('editarEvento.html', form=novoFormulario, evento=tarefa_atual)
+    return render_template('editar_tarefa.html', form=novoFormulario, evento=tarefa_atual)
 
 @app.route('/deletar_evento/<int:id>', methods=['GET', 'POST'])
 def deletar_evento(id):
