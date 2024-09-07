@@ -26,22 +26,22 @@ Novo Evento
 <div class="container vh-100 d-flex justify-content-center align-items-center">
   <div class="card p-4" style="width: 50%; max-width: 95%;">
 
-    <h2 style="text-align: center; font-family: Rubik, sans-serif;">CRIAR EVENTO</h2>
+    <h2 style="text-align: center; font-family: Rubik, sans-serif;">CRIAR TEREFA</h2>
     <hr>
 
     <form method="POST" action="{{ url_for('criar_evento') }}">
       {{ form.hidden_tag() }}
 
-      {{ form.nome_evento.label(class="form-label") }}
-      {{ form.nome_evento(class="form-control", placeholder="Digite o título do evento") }}
+      {{ form.nome_tarefa.label(class="form-label") }}
+      {{ form.nome_tarefa(class="form-control", placeholder="Digite o título da tarefa") }}
 
       <br>
-      {{ form.data_evento.label(class="form-label") }}
-      {{ form.data_evento(class="form-control") }}
+      {{ form.data_tarefa.label(class="form-label") }}
+      {{ form.data_tarefa(class="form-control") }}
 
       <br>
       {{ form.descricao.label(class="form-label") }}
-      {{ form.descricao(class="form-control custom-scrollbar", placeholder="Digite a descrição do evento") }}
+      {{ form.descricao(class="form-control custom-scrollbar", placeholder="Digite a descrição da tarefa") }}
 
       <br>
       {{ form.usuarios.label(class="form-label") }}

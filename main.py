@@ -7,7 +7,7 @@ from sqlalchemy import update
 from werkzeug.utils import redirect
 
 from config import app, db
-from forms import FormularioEvento, FormularioEditarEvento, FormularioAtualizarEvento
+from forms import FormularioTarefa, FormularioEditarTarefa
 from modelosBanco import *
 
 @app.route('/', methods=['GET', 'POST'])
@@ -89,8 +89,8 @@ def logout():
 @login_required
 def dashboard():
     nomeUsuario = current_user.nome
-    eventos = Evento.query.filter_by(id_usuario=current_user.id).all()
-    return render_template('dashboard.html', eventos=eventos, usuario=nomeUsuario)
+    eventos = Tarefa.query.filter_by(id_usuario=current_user.id).all()
+    return render_template('dashboard.html', tarefas=eventos, usuario=nomeUsuario)
 
 @app.route('/criar_evento', methods=['GET', 'POST'])
 def criar_evento():
@@ -102,36 +102,36 @@ def criar_evento():
     usuarios_escolhidos = [(user.id, user.nome) for user in usuarios]
 
     # Passando a tupla para o formulário
-    formulario = FormularioEvento(user_choices=usuarios_escolhidos)
+    formulario = FormularioTarefa(user_choices=usuarios_escolhidos)
 
     if formulario.validate_on_submit():
 
         # Pegar os dados do formulário
-        nomeEvento = formulario.nome_evento.data
-        dataEvento = formulario.data_evento.data
+        nomeEvento = formulario.nome_tarefa.data
+        dataEvento = formulario.data_tarefa.data
         descEvento = formulario.descricao.data
 
         usuBanco = Usuario.query.filter_by(id=current_user.id).first()
 
-        eventoBanco = Evento.query.filter_by(nome_evento=nomeEvento).first()
+        eventoBanco = Tarefa.query.filter_by(nome_tarefa=nomeEvento).first()
 
         print(f'-- {nomeEvento} -- {dataEvento} -- {descEvento}')
 
         if eventoBanco:
-            print('Evento ja existente')
+            print('Tarefa ja existente')
         else:
-            novo_evento = Evento(nome_evento=nomeEvento, data_evento=dataEvento, descricao=descEvento, id_usuario=usuBanco.id, status='pendente')
+            novo_evento = Tarefa(nome_tarefa=nomeEvento, data_tarefa=dataEvento, descricao=descEvento, id_usuario=usuBanco.id, status='pendente')
             db.session.add(novo_evento)
             db.session.commit()
 
             # Adicionar usuários selecionados ao evento
             for usuario_selecionado in formulario.usuarios.data:
                 usuario = Usuario.query.get(usuario_selecionado)
-                novo_evento = Evento(nome_evento=nomeEvento, data_evento=dataEvento, descricao=descEvento, id_usuario=usuario.id, status='pendente')
+                novo_evento = Tarefa(nome_tarefa=nomeEvento, data_tarefa=dataEvento, descricao=descEvento, id_usuario=usuario.id, status='pendente')
                 db.session.add(novo_evento)
             db.session.commit()
 
-            print('Evento Criado')
+            print('Tarefa Criado')
             return redirect(url_for('dashboard'))
 
     return render_template('criarEvento.html', form=formulario, usuarios=usuarios)
@@ -139,51 +139,40 @@ def criar_evento():
 @app.route('/editar_evento/<int:id>', methods=['GET', 'POST'])
 def editar_evento(id):
 
-    evento_atual = Evento.query.get(id)
-    nome_evento = evento_atual.nome_evento
-    data_evento = evento_atual.data_evento
-    descricao = evento_atual.descricao
-    status = evento_atual.status
+    # Selecionar tarefa no banco de dados
+    tarefa_atual = Tarefa.query.get(id)
 
-    print(f'Desc: {descricao}')
-    print(f'Status: {status}')
-    print(f'Tipo nome: {type(descricao)}')
-    print(f'Tipo status: {type(status)}')
-
-    novoFormulario = FormularioEditarEvento(status=evento_atual.status)
+    novoFormulario = FormularioEditarTarefa(status=tarefa_atual.status)
 
     if novoFormulario.validate_on_submit():
-        novoFormulario.populate_obj(evento_atual)
+        novoFormulario.populate_obj(tarefa_atual)
 
-        upt = update(Evento).values(
-            nome_evento=novoFormulario.nome_evento.data,
-            data_evento=novoFormulario.data_evento.data,
+        # Atualizar os valores da tarefa
+        upt = update(Tarefa).values(
+            nome_tarefa=novoFormulario.nome_tarefa.data,
+            data_tarefa=novoFormulario.data_tarefa.data,
             descricao=novoFormulario.descricao.data,
             status=novoFormulario.status.data,
-            id_usuario=evento_atual.id_usuario,
-        ).where(Evento.id == id)
+            id_usuario=tarefa_atual.id_usuario,
+        ).where(Tarefa.id == id)
 
         db.session.execute(upt)
         db.session.commit()
 
-        print(f'Atualizado -- Nome: {novoFormulario.nome_evento.data}')
-        print(f'Atualizado -- Data: {novoFormulario.data_evento.data}')
-        print(f'Atualizado -- Descricao: {novoFormulario.descricao.data}')
-        print(f'Atualizado -- Status: {novoFormulario.status.data}')
         return redirect(url_for('dashboard'))
 
-    return render_template('editarEvento.html', form=novoFormulario, evento=evento_atual)
+    return render_template('editarEvento.html', form=novoFormulario, evento=tarefa_atual)
 
 @app.route('/deletar_evento/<int:id>', methods=['GET', 'POST'])
 def deletar_evento(id):
-    evento_requerido = Evento.query.filter_by(id=id).first()
+    tarefa_requerida = Tarefa.query.filter_by(id=id).first()
 
-    if evento_requerido is None:
-        print('Evento não encontrado')
+    if tarefa_requerida is None:
         return redirect(url_for('dashboard'))
     else:
-        db.session.delete(evento_requerido)
+        db.session.delete(tarefa_requerida)
         db.session.commit()
+        flash('Tarefa excluída com sucesso!', 'success')
         return redirect(url_for('dashboard'))
 
 if __name__ == '__main__':

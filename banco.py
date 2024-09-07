@@ -1,5 +1,7 @@
 from config import app, db
-from modelosBanco import Usuario, Evento
+
+# precisa para criar o banco certo
+from modelosBanco import Usuario, Tarefa
 
 with app.app_context():
     db.create_all()

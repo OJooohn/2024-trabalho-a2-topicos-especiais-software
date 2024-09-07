@@ -9,22 +9,22 @@
     <div class="container vh-100 d-flex justify-content-center align-items-center">
         <div class="card p-4" style="width: 100%; max-width: 95%;">
 
-            <h2 style="text-align: center; font-family: Rubik, sans-serif;">EDITAR EVENTO</h2>
+            <h2 style="text-align: center; font-family: Rubik, sans-serif;">EDITAR TAREFA</h2>
             <hr>
 
             <form method="POST">
                 {{ form.hidden_tag() }}
 
-                {{ form.nome_evento.label(class="form-label") }}
-                {{ form.nome_evento(class="form-control", placeholder="Digite o título do evento", value=evento.nome_evento) }}
+                {{ form.nome_tarefa.label(class="form-label") }}
+                {{ form.nome_tarefa(class="form-control", placeholder="Digite o título do evento", value=evento.nome_tarefa) }}
 
                 <br>
-                {{ form.data_evento.label(class="form-label") }}
-                {{ form.data_evento(class="form-control", value=evento.data_evento) }}
+                {{ form.data_tarefa.label(class="form-label") }}
+                {{ form.data_tarefa(class="form-control", value=evento.data_tarefa) }}
 
                 <br>
                 {{ form.descricao.label(class="form-label") }}
-                <textarea name="descricao" class="form-control" placeholder="Digite a descrição do evento">{{ evento.descricao }}</textarea>
+                <textarea name="descricao" class="form-control" placeholder="Digite a descrição da tarefa">{{ evento.descricao }}</textarea>
 
                 <br>
                 {{ form.status.label(class="form-label") }}

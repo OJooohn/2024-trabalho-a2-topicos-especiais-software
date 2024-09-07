@@ -17,12 +17,12 @@ class Usuario(db.Model, UserMixin):
     nome = db.Column(db.String, unique=True, nullable=False)
     email = db.Column(db.String, unique=True, nullable=False)
     senha = db.Column(db.String, nullable=False)
-    eventos = db.relationship('Evento', backref='owner', lazy=True)
+    tarefas = db.relationship('Tarefa', backref='owner', lazy=True)
 
-class Evento(db.Model):
+class Tarefa(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    nome_evento = db.Column(db.String(100), nullable=False)
-    data_evento = db.Column(db.Date, nullable=False)
+    nome_tarefa = db.Column(db.String(100), nullable=False)
+    data_tarefa = db.Column(db.Date, nullable=False)
     descricao = db.Column(db.Text, nullable=True)
     id_usuario = db.Column(db.Integer, db.ForeignKey('usuario.id'), nullable=False)
     status = db.Column(db.String(50), nullable=False, default='pendente')

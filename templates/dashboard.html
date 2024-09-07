@@ -63,10 +63,13 @@ Dashboard
     table td:not(:last-child) {
         border-right: 2px solid var(--base-variant-secondary);
     }
-
-    /* Apply border-radius to the first and last rows and cells */
+    
     table tr:first-child th:first-child {
         border-top-left-radius: 20px;
+    }
+
+    table tr:first-child th:last-child {
+        border-top-right-radius: 20px;
     }
 
     table tr:last-child td:first-child {
@@ -77,8 +80,9 @@ Dashboard
         border-bottom-right-radius: 20px;
     }
 
-    table td.descricao  {
-        max-width: 200px; /* Adjust as needed */
+    table td.descricao {
+        max-width: 200px;
+        /* Adjust as needed */
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -121,6 +125,38 @@ Dashboard
         justify-content: center;
         width: 100%;
     }
+
+    .alert {
+        padding: 10px;
+        border-radius: 15px;
+        margin-bottom: 10px;
+        display: flex;
+        border: 0;
+    }
+
+    .alert input {
+        border: none;
+        background-color: transparent;
+        cursor: pointer;
+        color: var(--text-color);
+        transition: transform ease-in-out 0.3s;
+        align-items: center;
+    }
+
+    .alert input:hover {
+        transform: scale(1.1);
+        transition: transform ease-in-out 0.3s;
+    }
+
+    .msg-alert {
+        width: 90%;
+    }
+
+    .close-btn {
+        position: absolute;
+        right: 13px;
+        top: 7px;
+    }
 </style>
 <script type="text/javascript">
     function makeTableScroll() {
@@ -138,27 +174,49 @@ Dashboard
             wrapper.style.height = height + "px";
         }
     }
+
+    function removeFlash() {
+        const element = document.getElementById("div_flash");
+        element.remove();
+    }
 </script>
+
 <body onload="makeTableScroll()">
     <div class="container d-flex justify-content-center align-items-center">
         <div class="card p-4" style="width: 100%; max-width: 95%;">
-    
+
             <h1 style="text-align: center; font-family: Rubik, sans-serif;">DASHBOARD</h1>
-    
+
             <div class="dashboard-nav">
-    
+
                 <a href="{{ url_for('logout') }}"><button type="button" class="bg-danger nm-button">Logout</button></a>
                 <div class="nome-usuario">
                     <button>USUÁRIO: {{ usuario }}</button>
                 </div>
-    
+
             </div>
             <hr>
-    
-            <h3 style="text-align: center; font-family: Rubik, sans-serif;">EVENTOS</h3>
-            <a href="{{ url_for('criar_evento') }}"> <button type="button" class="btn btn-primary nm-button" style="text-transform: uppercase; letter-spacing: 3px;">Criar Nova Tarefa</button> </a>
+
+            <h3 style="text-align: center; font-family: Rubik, sans-serif;">TAREFAS</h3>
+            <a href="{{ url_for('criar_evento') }}"> <button type="button" class="btn btn-primary nm-button"
+                    style="text-transform: uppercase; letter-spacing: 3px;">Criar Nova Tarefa</button> </a>
 
             <br>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }} bg-danger" id="div_flash">
+
+                <div class="msg-alert">
+                   {{ message }}
+                </div>
+                <div class="close-btn">
+                    <input type="button" value=&#10006 onclick="removeFlash()" style="float: right">
+                </div>
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
             <div class="scrollingTable">
                 <table id="myTable">
                     <tr>
@@ -169,21 +227,24 @@ Dashboard
                         <th>Ações</th>
                     </tr>
 
-                    {% for event in eventos %}
+                    {% for tarefa in tarefas %}
                     <tr>
-                        <td style="max-width: 150px">{{ event.nome_evento }}</td>
-                        <td style="max-width: 70px;">{{ event.data_evento }}</td>
-                        <td style="max-width: 200px">{{ event.descricao }}</td>
-                        <td style="max-width: 100px;">{{ event.status }}</td>
-                        <td style="justify-content: space-between; align-items: center; height: 100%; max-width: 200px;">
+                        <td style="max-width: 150px">{{ tarefa.nome_tarefa }}</td>
+                        <td style="max-width: 70px;">{{ tarefa.data_tarefa }}</td>
+                        <td style="max-width: 200px">{{ tarefa.descricao }}</td>
+                        <td style="max-width: 100px;">{{ tarefa.status }}</td>
+                        <td
+                            style="justify-content: space-between; align-items: center; height: 100%; max-width: 200px;">
                             <div class="center-action-buttons">
                                 <div class="action-btns">
-                                    <a href="{{ url_for('editar_evento', id=event.id) }}"><button type="button"
-                                        class="btn bg-warning nm-button"
-                                        style="text-transform: uppercase; letter-spacing: 3px;">EDITAR</button></a>
-            
-                                    <form action="{{ url_for('deletar_evento', id=event.id) }}" method="POST" style="display:inline;">
-                                        <button type="submit" onclick="return confirm('Você tem certeza que deseja excluir?')"
+                                    <a href="{{ url_for('editar_evento', id=tarefa.id) }}"><button type="button"
+                                            class="btn bg-warning nm-button"
+                                            style="text-transform: uppercase; letter-spacing: 3px;">EDITAR</button></a>
+
+                                    <form action="{{ url_for('deletar_evento', id=tarefa.id) }}" method="POST"
+                                        style="display:inline;">
+                                        <button type="submit"
+                                            onclick="return confirm('Você tem certeza que deseja excluir?')"
                                             class="btn bg-danger nm-button"
                                             style="text-transform: uppercase; letter-spacing: 3px;">EXCLUIR</button>
                                     </form>
@@ -192,10 +253,10 @@ Dashboard
                         </td>
                     </tr>
                     {% endfor %}
-                    
+
                 </table>
             </div>
-    
+
         </div>
     </div>
 </body>

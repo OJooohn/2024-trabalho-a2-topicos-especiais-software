@@ -4,7 +4,7 @@ from wtforms.fields.choices import SelectField, SelectMultipleField
 from wtforms.fields.simple import EmailField
 from wtforms.validators import DataRequired, Length, Email
 
-from modelosBanco import Evento
+from modelosBanco import Tarefa
 
 # awo
 class FormularioRegistro(FlaskForm):
@@ -19,9 +19,9 @@ class FormularioLogin(FlaskForm):
     senha = PasswordField('Senha', validators=[DataRequired()])
     login = SubmitField('Login')
 
-class FormularioEvento(FlaskForm):
-    nome_evento = StringField('Nome', validators=[DataRequired()])
-    data_evento = DateField('Data', format='%Y-%m-%d', validators=[DataRequired()])
+class FormularioTarefa(FlaskForm):
+    nome_tarefa = StringField('Nome', validators=[DataRequired()])
+    data_tarefa = DateField('Data', format='%Y-%m-%d', validators=[DataRequired()])
     descricao = TextAreaField('Descrição')
     status = SelectField('Status', choices=[('pendente', 'Pendente'), ('em andamento', 'Em Andamento'),
                                             ('concluída', 'Concluída')], default='pendente')
@@ -29,16 +29,12 @@ class FormularioEvento(FlaskForm):
     criar = SubmitField('Criar Evento')
 
     def __init__(self, user_choices, *args, **kwargs):
-        super(FormularioEvento, self).__init__(*args, **kwargs)
+        super(FormularioTarefa, self).__init__(*args, **kwargs)
         self.usuarios.choices = user_choices
 
-class FormularioEditarEvento(FlaskForm):
-    nome_evento = StringField('Nome', validators=[DataRequired()])
-    data_evento = DateField('Data', format='%Y-%m-%d', validators=[DataRequired()])
+class FormularioEditarTarefa(FlaskForm):
+    nome_tarefa = StringField('Nome', validators=[DataRequired()])
+    data_tarefa = DateField('Data', format='%Y-%m-%d', validators=[DataRequired()])
     descricao = TextAreaField('Descrição')
     status = SelectField('Status', choices=[('pendente', 'Pendente'), ('em andamento', 'Em Andamento'), ('concluída', 'Concluída')])
     editar = SubmitField('Editar Evento')
-
-class FormularioAtualizarEvento(FlaskForm):
-    status = SelectField('Status', choices=[('pendente'), ('em andamento'), ('concluída')])
-    atualizar = SubmitField('Atualizar')
