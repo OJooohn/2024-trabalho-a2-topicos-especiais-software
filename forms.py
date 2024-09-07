@@ -8,6 +8,7 @@ class FormularioRegistro(FlaskForm):
     nome = StringField('Nome', validators=[DataRequired(), Length(min=4, max=25)])
     email = EmailField('Email',  validators=[DataRequired(), Email()])
     senha = PasswordField('Senha', validators=[DataRequired()])
+    confirmar_senha = PasswordField('Confirmar Senha', validators=[DataRequired()])
     registrar = SubmitField('Registrar')
 
 class FormularioLogin(FlaskForm):

@@ -53,17 +53,27 @@ def register():
         usuarioNome = formsRegistro.nome.data
         usuarioEmail = formsRegistro.email.data
         usuarioSenha = generate_password_hash(formsRegistro.senha.data)
+
         print(f'Usuario: {usuarioNome} | Senha codificada: {usuarioSenha}')
 
-        usuarioExistente = Usuario.query.filter_by(nome=usuarioNome).first()
-        if usuarioExistente:
-            print('>> Usuario ja cadastrado')
+        if formsRegistro.senha.data == formsRegistro.confirmar_senha.data:
+            usuarioExistente = Usuario.query.filter_by(nome=usuarioNome).first()
+            emailExistente = Usuario.query.filter_by(email=usuarioEmail).first()
+            if usuarioExistente:
+                print('>> Usuario ja cadastrado')
+                flash('Usuario ja cadastrado. Escolha outro nome de usuário!')
+            elif emailExistente:
+                print('>> Usuario ja cadastrado')
+                flash('Email ja cadastrado. Digite outro email!')
+            else:
+                novo_usuario = Usuario(nome=usuarioNome, email=usuarioEmail, senha=usuarioSenha)
+                db.session.add(novo_usuario)
+                db.session.commit()
+                print('>> Usuario registrado!')
+                return redirect(url_for('index'))
         else:
-            novo_usuario = Usuario(nome=usuarioNome, email=usuarioEmail, senha=usuarioSenha)
-            db.session.add(novo_usuario)
-            db.session.commit()
-            print('>> Usuario registrado!')
-            return redirect(url_for('index'))
+            flash('Por favor, confirme a senha corretamente')
+            return redirect(url_for('register'))
 
     return render_template('register.html', form=formsRegistro)
 
@@ -125,6 +135,7 @@ def criar_evento():
 
 @app.route('/editar_evento/<int:id>', methods=['GET', 'POST'])
 def editar_evento(id):
+
     evento_atual = Evento.query.filter_by(id=id).first()
 
     novoFormulario = FormularioEditarEvento()
