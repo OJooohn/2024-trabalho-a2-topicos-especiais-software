@@ -115,7 +115,7 @@ Dashboard
     .action-btns {
         width: 60%;
         display: flex;
-        justify-content: space-between;
+        justify-content: center;
         align-items: center;
     }
 
@@ -123,7 +123,7 @@ Dashboard
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 100%;
+        width: 30%;
     }
 
     .alert {
@@ -156,6 +156,10 @@ Dashboard
         position: absolute;
         right: 13px;
         top: 7px;
+    }
+    .btn:hover {
+        background-color: #0071ff;
+        border-color: #0071ff;
     }
 </style>
 <script type="text/javascript">
@@ -191,7 +195,12 @@ Dashboard
 
                 <a href="{{ url_for('logout') }}"><button type="button" class="bg-danger nm-button" style="border-radius: 20px;">Logout</button></a>
                 <div class="nome-usuario" style="border-radius: 20px;">
-                    <button>USUÁRIO: {{ usuario }}</button>
+                    <button style="color: var(--base-color); display: flex; align-items: center; border: none; background: none;">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="var(--base-color)" style="margin-right: 3px;">
+                            <path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Zm80-80h480v-32q0-11-5.5-20T700-306q-54-27-109-40.5T480-360q-56 0-111 13.5T260-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T560-640q0-33-23.5-56.5T480-720q-33 0-56.5 23.5T400-640q0 33 23.5 56.5T480-560Zm0-80Zm0 400Z"/>
+                        </svg>
+                        <p style="margin: 0;">{{ usuario }}</p>
+                    </button>
                 </div>
 
             </div>
@@ -199,14 +208,14 @@ Dashboard
 
             <h3 style="text-align: center; font-family: Rubik, sans-serif;">TAREFAS</h3>
             <div style="width: 100%; display: flex; justify-content: space-between; align-items: end;">
-                <a href="{{ url_for('criar_evento') }}" style="height: 50%;"> <button type="button" class="btn btn-primary nm-button"
+                <a href="{{ url_for('criar_tarefa') }}" style="height: 50%;"> <button type="button" class="btn btn-primary nm-button"
                         style="text-transform: uppercase; letter-spacing: 3px; border-radius: 20px;">Criar Nova Tarefa</button></a>
                 <form method="GET" action="{{ url_for('dashboard') }}" class="filter-form" style="display: flex;">
                     <div class="form-group">
                         <div>
                             <label for="filter_status" style="margin-left: 5px;">Status:</label>
                             <div style="display: flex; background-color: var(--base-variant-secondary); border-radius: 30px;">
-                                <select id="filter_status" name="filter_status" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-top-left-radius: 20px; border-bottom-left-radius: 20px; border: 0;">
+                                <select id="filter_status" name="filter_status" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-top-left-radius: 20px; border-bottom-left-radius: 20px; border: 0; border-bottom: 3px solid #0071ff; border-left:  3px solid #0071ff; border-top:  3px solid #0071ff;">
                                     <option value="">Todos</option>
                                     <option value="pendente" {% if request.args.get('filter_status')=='pendente' %}selected{%
                                         endif %}>Pendente</option>
@@ -215,7 +224,7 @@ Dashboard
                                     <option value="concluída" {% if request.args.get('filter_status')=='concluída' %}selected{%
                                         endif %}>Concluída</option>
                                 </select>
-                                <button type="submit" class="btn btn-primary" style="border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-top-left-radius: 0px; border-bottom-left-radius: 0px;">Filtrar</button>
+                                <button type="submit" class="btn btn-primary" style="transition: none; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-top-left-radius: 0px; border-bottom-left-radius: 0px; color: var(--base-color);">Filtrar</button>
                             </div>
                         </div>
                     </div>
@@ -228,16 +237,17 @@ Dashboard
             {% for category, message in messages %}
             <div class="alert alert-{{ category }} bg-danger" id="div_flash">
 
-                <div class="msg-alert">
+                <div class="msg-alert" style="color: var(--base-color);">
                     {{ message }}
                 </div>
                 <div class="close-btn">
-                    <input type="button" value=&#10006 onclick="removeFlash()" style="float: right">
+                    <input type="button" value=&#10006 onclick="removeFlash()" style="float: right; color: var(--base-color);">
                 </div>
             </div>
             {% endfor %}
             {% endif %}
             {% endwith %}
+            <hr style="margin-top: 0;">
             <div class="scrollingTable">
                 <table id="myTable">
                     <tr>
@@ -250,27 +260,27 @@ Dashboard
 
                     {% for tarefa in tarefas %}
                     <tr>
-                        <td style="max-width: 150px">{{ tarefa.nome_tarefa }}</td>
-                        <td style="max-width: 70px;">{{ tarefa.data_tarefa }}</td>
-                        <td style="max-width: 200px">{{ tarefa.descricao }}</td>
-                        <td style="max-width: 100px;">{{ tarefa.status }}</td>
+                        <td style="max-width: 70px">{{ tarefa.nome_tarefa }}</td>
+                        <td style="max-width: 50px;">{{ tarefa.data_tarefa }}</td>
+                        <td style="max-width: 300px">{{ tarefa.descricao }}</td>
+                        <td style="max-width: 50px; text-transform: capitalize;">{{ tarefa.status }}</td>
                         <td
-                            style="justify-content: space-between; align-items: center; height: 100%; max-width: 200px;">
-                            <div class="center-action-buttons">
-                                <div class="action-btns">
-                                    <a href="{{ url_for('editar_evento', id=tarefa.id) }}"><button type="button"
+                            style="justify-content: center; align-items: center; height: 100%; max-width: 80px;">
+                            
+                                <div class="action-btns" style="width: 100%;">
+                                    <a href="{{ url_for('editar_tarefa', id=tarefa.id) }}"><button type="button"
                                             class="btn bg-warning nm-button"
-                                            style="text-transform: uppercase; letter-spacing: 3px; border-radius: 20px;">EDITAR</button></a>
+                                            style="text-transform: uppercase; letter-spacing: 3px; border-radius: 20px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-top-left-radius: 20px; border-bottom-left-radius: 20px;">EDITAR</button></a>
 
-                                    <form action="{{ url_for('deletar_evento', id=tarefa.id) }}" method="POST"
+                                    <form action="{{ url_for('deletar_tarefa', id=tarefa.id) }}" method="POST"
                                         style="display:inline;">
                                         <button type="submit"
                                             onclick="return confirm('Você tem certeza que deseja excluir?')"
                                             class="btn bg-danger nm-button"
-                                            style="text-transform: uppercase; letter-spacing: 3px; border-radius: 20px;">EXCLUIR</button>
+                                            style="text-transform: uppercase; letter-spacing: 3px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-top-left-radius: 0px; border-bottom-left-radius: 0px;">EXCLUIR</button>
                                     </form>
                                 </div>
-                            </div>
+                            
                         </td>
                     </tr>
                     {% endfor %}

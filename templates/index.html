@@ -242,7 +242,7 @@
             {% endif %}
             {% endwith %}
 
-            <div class="login-container">
+            <div class="login-container" style="margin-left: 10px">
                 <p class="login-text">Faça o login:</p>
             </div>
 
@@ -251,12 +251,12 @@
                 {{ form.hidden_tag() }}
 
                 <div class="mb-3">
-                    {{ form.nome.label(class="form-label") }}
+                    {{ form.nome.label(class="form-label", style="margin-left: 10px") }}
                     {{ form.nome(class="form-control", placeholder="Digite seu login", style="border-radius: 15px;") }}
                 </div>
 
                 <div class="mb-3">
-                    {{ form.senha.label(class="form-label") }}
+                    {{ form.senha.label(class="form-label", style="margin-left: 10px") }}
                     {{ form.senha(class="form-control", placeholder="Digite sua senha", style="border-radius: 15px;") }}
                 </div>
                 <div class="d-grid">

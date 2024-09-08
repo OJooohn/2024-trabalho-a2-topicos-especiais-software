@@ -29,22 +29,22 @@ Novo Evento
     <h2 style="text-align: center; font-family: Rubik, sans-serif;">CRIAR TEREFA</h2>
     <hr>
 
-    <form method="POST" action="{{ url_for('criar_evento') }}">
+    <form method="POST" action="{{ url_for('criar_tarefa') }}">
       {{ form.hidden_tag() }}
 
-      {{ form.nome_tarefa.label(class="form-label") }}
+      {{ form.nome_tarefa.label(class="form-label", style="margin-left: 10px") }}
       {{ form.nome_tarefa(class="form-control", placeholder="Digite o título da tarefa") }}
 
       <br>
-      {{ form.data_tarefa.label(class="form-label") }}
+      {{ form.data_tarefa.label(class="form-label", style="margin-left: 10px") }}
       {{ form.data_tarefa(class="form-control") }}
 
       <br>
-      {{ form.descricao.label(class="form-label") }}
+      {{ form.descricao.label(class="form-label", style="margin-left: 10px") }}
       {{ form.descricao(class="form-control custom-scrollbar", placeholder="Digite a descrição da tarefa") }}
 
       <br>
-      {{ form.usuarios.label(class="form-label") }}
+      {{ form.usuarios.label(class="form-label", style="margin-left: 10px") }}
       <div style="width: 100%;">
         <select name="usuarios" id="users" multiple multiselect-search="true" multiselect-select-all="true"
           multiselect-max-items="3" onchange="console.log(this.selectedOptions)">

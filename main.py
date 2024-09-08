@@ -20,8 +20,7 @@ def index():
 
         if usuarioDB is None:
             flash(f'Usuário "{ usuarioNome }" não encontrado. Tente novamente')
-
-        if usuarioDB:
+        else:
             senhaDigitada = formsLogin.senha.data
             senhaDB = usuarioDB.senha
 
@@ -30,7 +29,6 @@ def index():
                 return redirect('dashboard')
             else:
                 flash('Senha incorreta... Digite novamente')
-                return redirect(url_for('index'))
 
     return render_template('index.html', form=formsLogin)
 
@@ -47,8 +45,10 @@ def register():
         usuarioSenha = generate_password_hash(formsRegistro.senha.data)
 
         if formsRegistro.senha.data == formsRegistro.confirmar_senha.data:
+
             usuarioExistente = Usuario.query.filter_by(nome=usuarioNome).first()
             emailExistente = Usuario.query.filter_by(email=usuarioEmail).first()
+
             if usuarioExistente:
                 flash('Usuario ja cadastrado. Escolha outro nome de usuário!')
             elif emailExistente:
@@ -58,9 +58,9 @@ def register():
                 db.session.add(novo_usuario)
                 db.session.commit()
                 return redirect(url_for('index'))
+
         else:
             flash('Por favor, confirme a senha corretamente')
-            return redirect(url_for('register'))
 
     return render_template('register.html', form=formsRegistro)
 
@@ -83,8 +83,8 @@ def dashboard():
 
     return render_template('dashboard.html', usuario=nomeUsuario, tarefas=tarefas)
 
-@app.route('/criar_evento', methods=['GET', 'POST'])
-def criar_evento():
+@app.route('/criar_tarefa', methods=['GET', 'POST'])
+def criar_tarefa():
     # Usuarios que não são o usuário logado
     # Aparecem na lista de seleção
     usuarios = Usuario.query.filter(Usuario.id != current_user.id).all()
@@ -116,14 +116,14 @@ def criar_evento():
                 usuario = Usuario.query.get(usuario_selecionado)
                 novo_evento = Tarefa(nome_tarefa=nomeEvento, data_tarefa=dataEvento, descricao=descEvento, id_usuario=usuario.id, status='pendente')
                 db.session.add(novo_evento)
-            db.session.commit()
 
+            db.session.commit()
             return redirect(url_for('dashboard'))
 
     return render_template('criar_tarefa.html', form=formulario, usuarios=usuarios)
 
-@app.route('/editar_evento/<int:id>', methods=['GET', 'POST'])
-def editar_evento(id):
+@app.route('/editar_tarefa/<int:id>', methods=['GET', 'POST'])
+def editar_tarefa(id):
 
     # Selecionar tarefa no banco de dados
     tarefa_atual = Tarefa.query.get(id)
@@ -149,17 +149,16 @@ def editar_evento(id):
 
     return render_template('editar_tarefa.html', form=novoFormulario, evento=tarefa_atual)
 
-@app.route('/deletar_evento/<int:id>', methods=['GET', 'POST'])
-def deletar_evento(id):
+@app.route('/deletar_tarefa/<int:id>', methods=['GET', 'POST'])
+def deletar_tarefa(id):
     tarefa_requerida = Tarefa.query.filter_by(id=id).first()
 
-    if tarefa_requerida is None:
-        return redirect(url_for('dashboard'))
-    else:
+    if tarefa_requerida :
         db.session.delete(tarefa_requerida)
         db.session.commit()
         flash('Tarefa excluída com sucesso!', 'success')
-        return redirect(url_for('dashboard'))
+
+    return redirect(url_for('dashboard'))
 
 if __name__ == '__main__':
     app.run(debug = True)
