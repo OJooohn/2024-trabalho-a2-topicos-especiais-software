@@ -6,7 +6,7 @@ from wtforms.validators import DataRequired, Length, Email
 
 from modelosBanco import Tarefa
 
-# awo
+# awo :D    
 
 # Os nomes de cada formulario (nome, senha, email, registrar, login) é as labels e inputs colocados entre {{}} no arquivo .html
 
