@@ -260,12 +260,12 @@ Dashboard
 
                     {% for tarefa in tarefas %}
                     <tr>
-                        <td style="max-width: 70px">{{ tarefa.nome_tarefa }}</td>
-                        <td style="max-width: 50px;">{{ tarefa.data_tarefa }}</td>
-                        <td style="max-width: 300px">{{ tarefa.descricao }}</td>
-                        <td style="max-width: 50px; text-transform: capitalize;">{{ tarefa.status }}</td>
+                        <td style="max-width: max-content">{{ tarefa.nome_tarefa }}</td>
+                        <td style="max-width: max-content">{{ tarefa.data_tarefa }}</td>
+                        <td style="max-width: max-content">{{ tarefa.descricao }}</td>
+                        <td style="min-width: max-content; text-transform: capitalize;">{{ tarefa.status }}</td>
                         <td
-                            style="justify-content: center; align-items: center; height: 100%; max-width: 80px;">
+                            style="justify-content: center; align-items: center; height: 100%; min-width: max-content;">
                             
                                 <div class="action-btns" style="width: 100%;">
                                     <a href="{{ url_for('editar_tarefa', id=tarefa.id) }}"><button type="button"
