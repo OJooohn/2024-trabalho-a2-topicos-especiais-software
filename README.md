@@ -1,7 +1,7 @@
 # Python Web - Gerenciamento de Tarefas
 
 ## Instalação
-1. Clone o [repositório](https://github.com/OJooohn/2024-topicos-especiais-software).
+1. Clone o [repositório](https://github.com/OJooohn/2024-trabalho-a2-topicos-especiais-software).
 2. Abra o PyCharm e adicione o ambiente virtual (venv).
 3. Abra o arquivo "_main.py_".
 4. Clique em "Install requirements" no canto superior direito.
