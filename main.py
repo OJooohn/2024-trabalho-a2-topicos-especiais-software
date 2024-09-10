@@ -1,3 +1,5 @@
+import time
+
 from flask import Flask, render_template, url_for, flash, request
 from flask_login import login_user, logout_user, current_user, login_required
 from flask_wtf import FlaskForm
@@ -160,5 +162,12 @@ def deletar_tarefa(id):
 
     return redirect(url_for('dashboard'))
 
+def iniciar():
+    from banco import criar_banco
+    with app.app_context():
+        # Tentar criar o banco de dados
+        criar_banco()
+
 if __name__ == '__main__':
+    iniciar()
     app.run(debug = True)

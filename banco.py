@@ -4,5 +4,9 @@ from config import app, db
 # Apenas criamos outro arquivo para fins de organização de código
 from modelosBanco import Usuario, Tarefa
 
+def criar_banco():
+    with app.app_context():
+        db.create_all()
+
 with app.app_context():
     db.create_all()
