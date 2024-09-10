@@ -15,11 +15,19 @@ def load_user(usuario_id):
 class Usuario(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String, unique=True, nullable=False)
-    email = db.Column(db.String, unique=True, nullable=False)
+    email = db.Column(db.String, unique=True, nullable=True)
     senha = db.Column(db.String, nullable=False)
 
     # Se relaciona com a tabela 'Tarefa' (class Tarefa)
     tarefas = db.relationship('Tarefa', backref='owner', lazy=True)
+
+    is_admin = db.Column(db.Boolean, default=False)
+
+    def __init__(self, nome, email, senha, is_admin):
+        self.nome = nome
+        self.email = email
+        self.senha = senha
+        self.is_admin = is_admin
 
 class Tarefa(db.Model):
     id = db.Column(db.Integer, primary_key=True)

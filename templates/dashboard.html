@@ -250,41 +250,53 @@ Dashboard
             <hr style="margin-top: 0;">
             <div class="scrollingTable">
                 <table id="myTable">
-                    <tr>
-                        <th>Nome</th>
-                        <th>Data</th>
-                        <th>Descrição</th>
-                        <th>Status</th>
-                        <th>Ações</th>
-                    </tr>
+                    <thead>
+                        <tr>
+                            {% if is_admin %}
+                                <th>Usuário</th>
+                            {% endif %}
+                            <th>Nome</th>
+                            <th>Data</th>
+                            <th>Descrição</th>
+                            <th>Status</th>
+                            {% if not is_admin %}
+                                <th>Ações</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for tarefa, usuario in tarefas %}
+                        <tr>
+                            {% if is_admin %}
+                                <td>{{ usuario.nome }}</td>
+                            {% endif %}
+                            <td style="max-width: max-content">{{ tarefa.nome_tarefa }}</td>
+                            <td style="max-width: max-content">{{ tarefa.data_tarefa.strftime('%d/%m/%Y') }}</td>
+                            <td style="max-width: max-content">{{ tarefa.descricao }}</td>
+                            <td style="min-width: max-content; text-transform: capitalize;">{{ tarefa.status }}</td>
+                            {% if not is_admin %}
+                                <td
+                                    style="justify-content: center; align-items: center; height: 100%; min-width: max-content;">
+                                    
+                                        <div class="action-btns" style="width: 100%;">
+                                            <a href="{{ url_for('editar_tarefa', id=tarefa.id) }}"><button type="button"
+                                                    class="btn bg-warning nm-button"
+                                                    style="text-transform: uppercase; letter-spacing: 3px; border-radius: 20px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-top-left-radius: 20px; border-bottom-left-radius: 20px;">EDITAR</button></a>
 
-                    {% for tarefa in tarefas %}
-                    <tr>
-                        <td style="max-width: max-content">{{ tarefa.nome_tarefa }}</td>
-                        <td style="max-width: max-content">{{ tarefa.data_tarefa }}</td>
-                        <td style="max-width: max-content">{{ tarefa.descricao }}</td>
-                        <td style="min-width: max-content; text-transform: capitalize;">{{ tarefa.status }}</td>
-                        <td
-                            style="justify-content: center; align-items: center; height: 100%; min-width: max-content;">
-                            
-                                <div class="action-btns" style="width: 100%;">
-                                    <a href="{{ url_for('editar_tarefa', id=tarefa.id) }}"><button type="button"
-                                            class="btn bg-warning nm-button"
-                                            style="text-transform: uppercase; letter-spacing: 3px; border-radius: 20px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-top-left-radius: 20px; border-bottom-left-radius: 20px;">EDITAR</button></a>
-
-                                    <form action="{{ url_for('deletar_tarefa', id=tarefa.id) }}" method="POST"
-                                        style="display:inline;">
-                                        <button type="submit"
-                                            onclick="return confirm('Você tem certeza que deseja excluir?')"
-                                            class="btn bg-danger nm-button"
-                                            style="text-transform: uppercase; letter-spacing: 3px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-top-left-radius: 0px; border-bottom-left-radius: 0px;">EXCLUIR</button>
-                                    </form>
-                                </div>
-                            
-                        </td>
-                    </tr>
-                    {% endfor %}
-
+                                            <form action="{{ url_for('deletar_tarefa', id=tarefa.id) }}" method="POST"
+                                                style="display:inline;">
+                                                <button type="submit"
+                                                    onclick="return confirm('Você tem certeza que deseja excluir?')"
+                                                    class="btn bg-danger nm-button"
+                                                    style="text-transform: uppercase; letter-spacing: 3px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-top-left-radius: 0px; border-bottom-left-radius: 0px;">EXCLUIR</button>
+                                            </form>
+                                        </div>
+                                    
+                                </td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
                 </table>
             </div>
 

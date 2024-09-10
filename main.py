@@ -56,7 +56,7 @@ def register():
             elif emailExistente:
                 flash('Email ja cadastrado. Digite outro email!')
             else:
-                novo_usuario = Usuario(nome=usuarioNome, email=usuarioEmail, senha=usuarioSenha)
+                novo_usuario = Usuario(nome=usuarioNome, email=usuarioEmail, senha=usuarioSenha, is_admin=False)
                 db.session.add(novo_usuario)
                 db.session.commit()
                 return redirect(url_for('index'))
@@ -78,18 +78,30 @@ def dashboard():
 
     filter_status = request.args.get('filter_status', '')
 
-    if filter_status:
-        tarefas = Tarefa.query.filter_by(id_usuario=current_user.id, status=filter_status).all()
-    else:
-        tarefas = Tarefa.query.filter_by(id_usuario=current_user.id).all()
+    is_admin = current_user.is_admin
 
-    return render_template('dashboard.html', usuario=nomeUsuario, tarefas=tarefas)
+    if is_admin:
+        if filter_status:
+            tarefas = db.session.query(Tarefa, Usuario).join(Usuario, Tarefa.id_usuario == Usuario.id).filter(Tarefa.status == filter_status).all()
+        else:
+            tarefas = db.session.query(Tarefa, Usuario).join(Usuario, Tarefa.id_usuario == Usuario.id).all()
+    else:
+        if filter_status:
+            tarefas = db.session.query(Tarefa, Usuario).join(Usuario, Tarefa.id_usuario == Usuario.id).filter(Tarefa.id_usuario == current_user.id, Tarefa.status == filter_status).all()
+        else:
+            tarefas = db.session.query(Tarefa, Usuario).join(Usuario, Tarefa.id_usuario == Usuario.id).filter(Tarefa.id_usuario == current_user.id).all()
+
+    # Obter todos os usuários, exceto o administrador
+    usuarios = Usuario.query.filter(Usuario.is_admin == False).all()
+
+    return render_template('dashboard.html', usuario=nomeUsuario, tarefas=tarefas, is_admin=is_admin, usuarios=usuarios)
+
 
 @app.route('/criar_tarefa', methods=['GET', 'POST'])
 def criar_tarefa():
     # Usuarios que não são o usuário logado
     # Aparecem na lista de seleção
-    usuarios = Usuario.query.filter(Usuario.id != current_user.id).all()
+    usuarios = Usuario.query.filter(Usuario.id != current_user.id, Usuario.is_admin == False).all()
 
     # Criando uma tupla com os usuários para a criação dos eventos
     usuarios_escolhidos = [(user.id, user.nome) for user in usuarios]
@@ -108,19 +120,21 @@ def criar_tarefa():
 
         tarefa_banco = Tarefa.query.filter_by(nome_tarefa=nomeEvento).first()
 
-        if not tarefa_banco:
+        is_admin = Usuario.query.filter_by(id=current_user.id).first().is_admin
+
+        if not is_admin:
             novo_evento = Tarefa(nome_tarefa=nomeEvento, data_tarefa=dataEvento, descricao=descEvento, id_usuario=usuBanco.id, status='pendente')
             db.session.add(novo_evento)
             db.session.commit()
 
-            # Adicionar usuários selecionados ao evento
-            for usuario_selecionado in formulario.usuarios.data:
-                usuario = Usuario.query.get(usuario_selecionado)
-                novo_evento = Tarefa(nome_tarefa=nomeEvento, data_tarefa=dataEvento, descricao=descEvento, id_usuario=usuario.id, status='pendente')
-                db.session.add(novo_evento)
+        # Adicionar usuários selecionados ao evento
+        for usuario_selecionado in formulario.usuarios.data:
+            usuario = Usuario.query.get(usuario_selecionado)
+            novo_evento = Tarefa(nome_tarefa=nomeEvento, data_tarefa=dataEvento, descricao=descEvento, id_usuario=usuario.id, status='pendente')
+            db.session.add(novo_evento)
 
-            db.session.commit()
-            return redirect(url_for('dashboard'))
+        db.session.commit()
+        return redirect(url_for('dashboard'))
 
     return render_template('criar_tarefa.html', form=formulario, usuarios=usuarios)
 
@@ -167,6 +181,13 @@ def iniciar():
     with app.app_context():
         # Tentar criar o banco de dados
         criar_banco()
+
+        existing_admin = Usuario.query.filter_by(is_admin=True).first()
+
+        if not existing_admin:
+            admin = Usuario(nome='admin', email=None, senha=generate_password_hash('admin'), is_admin=True)
+            db.session.add(admin)
+            db.session.commit()
 
 if __name__ == '__main__':
     iniciar()
